@@ -1,0 +1,2 @@
+REFUSED:
+visual_odom (camera) produced no samples

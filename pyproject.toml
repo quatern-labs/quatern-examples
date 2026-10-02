@@ -1,0 +1,23 @@
+[project]
+name = "quatern-examples"
+version = "0.3.0"
+description = "Examples of robot code written and verified with Quatern"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+# The Quatern release these examples, and their expected output, were written
+# against. CI tests them against the latest release on PyPI.
+dependencies = ["quatern==0.3.0"]
+
+[dependency-groups]
+dev = ["ruff==0.16.10", "pre-commit==4.6.2"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+extend-exclude = [".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "S"]
+# S603/S607: the runner starts `bash run.sh` on purpose.
+ignore = ["S603", "S607"]

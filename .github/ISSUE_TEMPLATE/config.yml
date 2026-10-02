@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: A bug in Quatern itself
+    url: https://quatern.co/docs
+    about: Problems with Quatern rather than with an example; see the docs for where to report them.

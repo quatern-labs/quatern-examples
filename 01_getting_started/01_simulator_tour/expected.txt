@@ -1,0 +1,6 @@
+[1/7] Pick a robot
+[6/7] Verify offline against the capture
+verdict: READY
+[7/7] Deploy in the simulator, behind the gate and the watchdog
+COMPLETED (STOP_OBSERVED)
+Quickstart complete

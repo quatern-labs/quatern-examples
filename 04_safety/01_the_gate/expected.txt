@@ -1,0 +1,4 @@
+DEPLOY GATE
+will abort on:
+bounded travel after an abort
+no terminal to ask on; pass --yes to confirm

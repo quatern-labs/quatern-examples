@@ -1,0 +1,31 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.10
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-xml
+      - id: check-added-large-files
+      - id: detect-private-key
+  - repo: local
+    hooks:
+      # Anthropic keys start with sk-ant-. Never commit one; use QUATERN_API_KEY
+      # or ANTHROPIC_API_KEY in your environment, or `quatern login`.
+      - id: no-api-keys
+        name: no API keys
+        entry: "sk-ant-[A-Za-z0-9_-]{8,}"
+        language: pygrep
+        exclude: ^\.pre-commit-config\.yaml$
+      - id: no-quatern-credentials
+        name: no Quatern credentials files
+        entry: credentials files from ~/.quatern must not be committed
+        language: fail
+        files: (^|/)credentials$

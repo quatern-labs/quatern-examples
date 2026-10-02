@@ -1,0 +1,2 @@
+[tool] deploy_to_robot
+[tool] run_slam_standalone

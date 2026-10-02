@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.ruff_cache/
+# Local Quatern data, sign-in and agent tooling state never belong here.
+.quatern/
+credentials
+.env
+.claude/
+CLAUDE.local.md
+logs/

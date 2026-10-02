@@ -1,0 +1,4 @@
+target:     sim_drift (sim2d, not hardware)
+gate confirmed; deploying...
+ABORTED (STOP_OBSERVED)
+stopped_by: watchdog

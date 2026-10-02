@@ -1,0 +1,79 @@
+name: examples
+
+# Every example runs headlessly against the latest Quatern release on PyPI.
+# Examples that need the agent run only when the QUATERN_API_KEY secret is set.
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "17 6 * * 1" # weekly, Monday 06:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: examples-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+      - run: pip install ruff==0.16.10
+      - run: ruff check .
+      - run: ruff format --check .
+
+  examples:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      # The examples are written for the version pinned in pyproject.toml.
+      # Until that release is on PyPI, skip instead of failing.
+      - name: Check the Quatern release is on PyPI
+        id: release
+        run: |
+          python - <<'PY'
+          import json, os, re, tomllib, urllib.request
+          pinned = next(d for d in tomllib.load(open("pyproject.toml", "rb"))["project"]["dependencies"] if d.startswith("quatern"))
+          wanted = re.search(r"==\s*([\w.]+)", pinned).group(1)
+          with urllib.request.urlopen("https://pypi.org/pypi/quatern/json", timeout=30) as r:
+              released = json.load(r)["releases"].keys()
+          available = wanted in released
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write(f"available={'true' if available else 'false'}\n")
+          if not available:
+              msg = (f"quatern {wanted} is not on PyPI yet (released: {', '.join(sorted(released)) or 'none'}). "
+                     "Skipping the examples until it is published.")
+              print(f"::notice title=Examples skipped::{msg}")
+          PY
+
+      - name: Install the latest Quatern from PyPI
+        if: steps.release.outputs.available == 'true'
+        run: |
+          pip install --upgrade quatern
+          pip show quatern | grep -E '^(Name|Version)'
+
+      - name: Run every example
+        if: steps.release.outputs.available == 'true'
+        env:
+          # Agent examples run only when this secret is set; the runner skips them otherwise.
+          QUATERN_API_KEY: ${{ secrets.QUATERN_API_KEY }}
+        run: python internal/run_examples.py --agent --logs logs
+
+      - name: Keep the logs
+        if: always() && steps.release.outputs.available == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: example-logs
+          path: logs/
+          if-no-files-found: ignore

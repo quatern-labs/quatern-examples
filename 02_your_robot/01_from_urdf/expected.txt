@@ -1,0 +1,4 @@
+Sensors: base_odom (odometry, estimates base), scan (laserscan). Plans in grid2d over group 'base'.
+ok    backend     target 'sim' uses the sim2d backend
+ok    streams     scan (laserscan)
+ready: no blocking problems

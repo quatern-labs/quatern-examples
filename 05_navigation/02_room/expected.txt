@@ -1,0 +1,4 @@
+goal: Navigate around the island to reach (1.2, 2.0)
+localization: drift at end
+verdict: READY
+COMPLETED (STOP_OBSERVED)

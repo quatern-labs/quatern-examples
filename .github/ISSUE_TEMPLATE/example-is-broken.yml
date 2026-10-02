@@ -1,0 +1,57 @@
+name: Example is broken
+description: An example fails, or its output no longer matches its README.
+labels: ["broken-example"]
+body:
+  - type: input
+    id: example
+    attributes:
+      label: Example
+      description: The example's folder.
+      placeholder: 04_safety/02_watchdog_stops_drift
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Quatern version
+      description: Output of `pip show quatern | grep Version` (or `pipx list`).
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: OS and Python version
+      placeholder: Ubuntu 24.04, Python 3.11
+    validations:
+      required: true
+  - type: dropdown
+    id: signin
+    attributes:
+      label: Signed in?
+      options:
+        - No sign-in, no key
+        - Signed in with `quatern login`
+        - Own ANTHROPIC_API_KEY
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command you ran
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output
+      description: >-
+        The full output. Remove anything private first. Never paste an API key
+        or the contents of ~/.quatern/credentials.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What the README says should happen
