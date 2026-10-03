@@ -20,8 +20,8 @@ particle cloud never converges, no `map -> odom` is published, and AMCL logs:
 ```
 
 `quatern diagnose` reads the log, the params file and the topic list and names
-the cause. Then the agent explains it and writes its own fix, which
-`propose_fix` checks. The checked fix is applied with `--write`, and diagnose
+the cause. Then the agent explains it, and can write its own fix for
+`propose_fix` to check. The checked fix is applied with `--write`, and diagnose
 runs again, with the robot's URDF and a simulator recording, to show the cause
 is gone.
 
@@ -65,8 +65,10 @@ Trimmed.
      -    scan_topic: /scan
      +    scan_topic: /tb3_1/scan
    - checked against the configuration: amcl_no_scans is gone and nothing new appears
-   - unverified: recording turtlebot3_burger.default_2026-10-03_room_v1 was made in the simulator and carries no message frames, topic names or QoS to check this against; a rosbag2 of the robot can (--bag)
+   - verified on recording turtlebot3_burger.default_2026-10-03_room_v1: topics pass (frames of 2 recorded topic(s) against the TF tree; 1 subscribed topic(s) against the recording's topics; subscribers' reliability against the QoS each publisher offered; the recording was made under namespace /, but the robot runs under /tb3_1 (its declared topics): its topics are read in /tb3_1 (/imu as /tb3_1/imu, /odom as /tb3_1/odom, /robot_description as /tb3_1/robot_description, /scan as /tb3_1/scan))
 
+note: recording turtlebot3_burger.default_2026-10-03_room_v1 was made under namespace /, but the robot runs under /tb3_1 (its declared topics): its topics are read in /tb3_1 (/imu as /tb3_1/imu, /odom as /tb3_1/odom, /robot_description as /tb3_1/robot_description, /scan as /tb3_1/scan)
+note: replayed turtlebot3_burger.default_2026-10-03_room_v1 through the configuration: amcl subscribes to /scan (scan_topic), which the recording does not have (it has /tb3_1/scan)
 note: mount check passed on turtlebot3_burger.default_2026-10-03_room_v1: the URDF's base_scan mount gives the sharpest map (+0 deg: 36.1, +90 deg: 4.0, +180 deg: 4.0, -90 deg: 4.0)
 nothing written; --write applies the checked fixes
 ```
@@ -75,18 +77,19 @@ nothing written; --write applies the checked fixes
 
 ```text
 [tool] diagnose_stack {"files": ["launch.log", "nav2_params.yaml", "topics.txt"], "robot": "turtlebot3_burger"}
-[tool] propose_fix {"files": ["launch.log", "nav2_params.yaml", "topics.txt"], "cause": "amcl_no_scans", "subject": "amcl:/scan", "file": "nav2_params.yaml", "set": {"key": ["a...
-[result] propose_fix {"accepted":true,"cause":"amcl_no_scans","subject":"amcl:/scan","file":"nav2_params.yaml","diff":"--- a/nav2_params.y...
-`diagnose_stack` returned one finding for turtlebot3_burger, and the fix for it is not yet tested against a real recording.
+[result] diagnose_stack {"findings":[{"cause":"amcl_no_scans","subject":"amcl:/scan","severity":"error","summary":"amcl listens for scans on ...
+`diagnose_stack` returned one root cause. I found nothing it missed, and Quatern's fix was correct, so I didn't write my own or call `propose_fix`.
 
-## Root cause: AMCL listens on a topic nobody publishes (`amcl_no_scans`, error)
+## Root cause: AMCL listens on `/scan`, but the lidar publishes on `/tb3_1/scan`
 [...]
-Quatern's fix is correct, and my own check with `propose_fix` produced the identical diff:
-[...]
-## How far the fix is checked
+**How it was checked**
+- Checked against the configuration: the `amcl_no_scans` finding is gone and no new finding appears.
+- Replayed on the recording `turtlebot3_burger.default_2026-10-03_room_v1`: the topics, frames and QoS checks pass.
+- The recording was made under namespace `/`, but the robot declares `/tb3_1` topics. The tool read the recording's topics in `/tb3_1` (`/scan` as `/tb3_1/scan`, `/odom` as `/tb3_1/odom`, and so on).
+- The mount check passed. The URDF's `base_scan` orientation gives the sharpest map at +0° (score 36.1, against 4.0 at the other three angles), so the lidar mount matches the URDF.
 
-- **Checked against the configuration:** the `amcl_no_scans` cause is gone and nothing new appears.
-- **Not replayed on a recording:** the only recording, `turtlebot3_burger.default_2026-10-03_room_v1`, comes from the simulator. It has no topic names, frames or QoS to replay against, so the fix is **unverified**. A rosbag2 from the real robot, passed as `--bag`, would let me replay it.
+I pointed the parameter at `/tb3_1/scan` because that is the topic the robot declares. I did not pick it only because the recording had it.
+[...]
 ```
 
 After `--write`, diagnose again:
@@ -94,24 +97,31 @@ After `--write`, diagnose again:
 ```text
 wrote: nav2_params.yaml
 no root cause found in launch.log, nav2_params.yaml, topics.txt, ~/.quatern/robots/turtlebot3_burger.urdf (turtlebot3_burger.default's URDF), recording turtlebot3_burger.default_2026-10-03_room_v1
+note: recording turtlebot3_burger.default_2026-10-03_room_v1 was made under namespace /, but the robot runs under /tb3_1 (its declared topics): its topics are read in /tb3_1 (/imu as /tb3_1/imu, /odom as /tb3_1/odom, /robot_description as /tb3_1/robot_description, /scan as /tb3_1/scan)
+note: replayed turtlebot3_burger.default_2026-10-03_room_v1 through the configuration: frames, topics and QoS agree
 note: mount check passed on turtlebot3_burger.default_2026-10-03_room_v1: the URDF's base_scan mount gives the sharpest map (+0 deg: 36.1, +90 deg: 4.0, +180 deg: 4.0, -90 deg: 4.0)
 ```
 
-The agent's wording changes from run to run. Its tool calls and the diff
-don't.
+The agent's wording changes from run to run, and so does whether it calls
+`propose_fix` to check a fix of its own. The diff doesn't change.
 
-The fix is checked against the configuration. On the recording it is
-`unverified`: a simulator recording carries no message frames, topic names or
-QoS to check it against, and a rosbag2 of the robot (`--bag`) can. The
-recording's lidar mount check passed.
+The fix is checked against the configuration and verified on the recording.
+The simulator recording was made without a namespace, and the robot declares
+its topics under `/tb3_1` (`topics.txt`). Diagnose reads the recording's
+topics in the robot's namespace, so the recorded `/scan` is `/tb3_1/scan`.
+The declared topics win: the recording doesn't pull the fix back to `/scan`.
+Before the fix, the replay shows AMCL subscribed to a topic the recording
+doesn't have. After it, frames, topics and QoS agree. The recording's lidar
+mount check passed.
 
 ## What to look for in the run record
 
 Diagnose writes no receipt or stack. For a record, run it with `--json`.
 `findings[0].cause` is `amcl_no_scans`, `findings[0].evidence` includes the
-`topics` entry, and `findings[0].fix.verified` is `false`, with `fix.checks`
-listing *checked against the configuration* and *unverified*. `notes`
-holds the mount check and `written` lists the files `--write` changed.
+`topics` entry, and `findings[0].fix.verified` is `true`, with `fix.checks`
+listing *checked against the configuration* and *verified on recording*.
+`notes` holds the namespace mapping, the recording replay and the mount check,
+and `written` lists the files `--write` changed.
 
 ## Docs
 

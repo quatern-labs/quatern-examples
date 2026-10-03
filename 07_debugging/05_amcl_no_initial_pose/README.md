@@ -66,9 +66,11 @@ Trimmed.
             x: 0.0
             y: 0.0
    - checked against the configuration: amcl_no_initial_pose is gone and nothing new appears
-   - unverified: recording turtlebot3_burger.default_2026-10-03_room_v1 was made in the simulator and carries no message frames, topic names or QoS to check this against; a rosbag2 of the robot can (--bag)
+   - unverified: a recording cannot show where the robot starts on AMCL's map
    also: The fix starts AMCL at the initial_pose in the file (x 0.0, y 0.0, yaw 0.0): that must be where the robot really is on the map when it starts, or AMCL converges somewhere wrong. Without a fixed start, publish one on /initialpose instead (RViz's 2D Pose Estimate does).
 
+note: recording turtlebot3_burger.default_2026-10-03_room_v1 was made under namespace /, but the robot runs under /tb3_1 (its declared topics): its topics are read in /tb3_1 (/imu as /tb3_1/imu, /odom as /tb3_1/odom, /robot_description as /tb3_1/robot_description, /scan as /tb3_1/scan)
+note: replayed turtlebot3_burger.default_2026-10-03_room_v1 through the configuration: frames, topics and QoS agree
 note: mount check passed on turtlebot3_burger.default_2026-10-03_room_v1: the URDF's base_scan mount gives the sharpest map (+0 deg: 36.1, +90 deg: 4.0, +180 deg: 4.0, -90 deg: 4.0)
 nothing written; --write applies the checked fixes
 ```
@@ -79,19 +81,20 @@ nothing written; --write applies the checked fixes
 [tool] diagnose_stack {"files": ["launch.log", "nav2_params.yaml", "topics.txt"], "robot": "turtlebot3_burger"}
 [tool] propose_fix {"files": ["launch.log", "nav2_params.yaml", "topics.txt"], "cause": "amcl_no_initial_pose", "subject": "amcl", "file": "nav2_params.yaml", "set": {"key": ["...
 [result] propose_fix {"accepted":true,"cause":"amcl_no_initial_pose","subject":"amcl","file":"nav2_params.yaml","diff":"--- a/nav2_params....
-`diagnose_stack` found one root cause. Its fix passes the configuration check but is not replay-verified.
+`diagnose_stack` returned one root cause, and my own fix matched Quatern's diff. Neither could be replayed on a recording, so the fix is checked against the configuration only.
 [...]
-**Fix**
-This is the diff from `diagnose_stack`. I submitted the same change to `propose_fix` as a single parameter set, and it was accepted with an identical diff.
+**Fix** (Quatern's reference diff, and my own `propose_fix` result is identical; `propose_fix` accepted it):
 [...]
-**What was checked and what was not**
-- **Checked:** against the configuration, the `amcl_no_initial_pose` finding is gone and nothing new appears.
-- **Not verified:** the replay. The recording `turtlebot3_burger.default_2026-10-03_room_v1` came from the simulator and has no message frames, topic names or QoS to replay against. A rosbag2 of the real robot, passed with `--bag`, would verify it. Until then, don't treat this as a verified fix.
+**Checks and limits**
+- The checks confirm the cause is gone and nothing new appears.
+- The fix is **unverified** because a recording can't show where the robot starts on AMCL's map.
+- The file's `initial_pose` is x 0.0, y 0.0, yaw 0.0. That must be where the robot really is on the map at startup, or AMCL will converge to the wrong place.
+- If the start position varies, leave `set_initial_pose: false`. Publish a pose on `/initialpose` instead, for example with RViz's 2D Pose Estimate.
 
-**The pose must match where the robot really starts**
-- The fix starts AMCL at x 0.0, y 0.0, yaw 0.0 on the map.
-- If the robot does not actually start there, AMCL will converge to the wrong place.
-- If the start varies, leave `set_initial_pose: false` and publish the pose on `/initialpose` instead, for example with RViz's "2D Pose Estimate".
+## Other results
+- **Namespace:** the recording was made under `/`, but the robot runs under `/tb3_1`, according to its declared topics. `diagnose_stack` read the recording's topics in `/tb3_1`, for example `/scan` as `/tb3_1/scan`. Keep your parameters on the `/tb3_1/...` names from `topics.txt`. Don't switch them to the recording's names.
+- **Frames, topics and QoS:** a replay of the recording through the configuration found them consistent.
+[...]
 ```
 
 After `--write`, diagnose again:
@@ -99,6 +102,8 @@ After `--write`, diagnose again:
 ```text
 wrote: nav2_params.yaml
 no root cause found in launch.log, nav2_params.yaml, topics.txt, ~/.quatern/robots/turtlebot3_burger.urdf (turtlebot3_burger.default's URDF), recording turtlebot3_burger.default_2026-10-03_room_v1
+note: recording turtlebot3_burger.default_2026-10-03_room_v1 was made under namespace /, but the robot runs under /tb3_1 (its declared topics): its topics are read in /tb3_1 (/imu as /tb3_1/imu, /odom as /tb3_1/odom, /robot_description as /tb3_1/robot_description, /scan as /tb3_1/scan)
+note: replayed turtlebot3_burger.default_2026-10-03_room_v1 through the configuration: frames, topics and QoS agree
 note: mount check passed on turtlebot3_burger.default_2026-10-03_room_v1: the URDF's base_scan mount gives the sharpest map (+0 deg: 36.1, +90 deg: 4.0, +180 deg: 4.0, -90 deg: 4.0)
 ```
 
@@ -106,9 +111,11 @@ The agent's wording changes from run to run. Its tool calls and the diff
 don't.
 
 The fix is checked against the configuration. On the recording it is
-`unverified`: a simulator recording carries no message frames, topic names or
-QoS to check it against, and a rosbag2 of the robot (`--bag`) can. The
-recording's lidar mount check passed.
+`unverified`: a recording can't show where the robot starts on AMCL's map. The
+recording itself is checked. It was made without a namespace, so diagnose reads
+its topics under the robot's `/tb3_1` (from `topics.txt`), and its frames,
+topics and QoS agree with the configuration. The recording's lidar mount check
+passed.
 
 ## What to look for in the run record
 
@@ -116,8 +123,8 @@ Diagnose writes no receipt or stack. For a record, run it with `--json`.
 `findings[0].cause` is `amcl_no_initial_pose`, `findings[0].advice` holds the
 note about where the robot starts, and `findings[0].fix.verified` is `false`,
 with `fix.checks` listing *checked against the configuration* and
-*unverified*. `notes` holds the mount check and `written` lists the files
-`--write` changed.
+*unverified*. `notes` holds the namespace mapping, the recording replay and
+the mount check, and `written` lists the files `--write` changed.
 
 ## Docs
 

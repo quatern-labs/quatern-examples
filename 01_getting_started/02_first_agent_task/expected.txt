@@ -1,2 +1,5 @@
 [tool] list_captures
 [tool] run_slam_standalone
+[tool] analyze_verification_signals
+wheel_odom corroborated by scan
+cross-checks base

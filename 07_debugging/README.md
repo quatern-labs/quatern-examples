@@ -18,8 +18,10 @@ None is copied from anyone's robot. Each case says so at the top.
 
 Each fix is checked against the configuration, then replayed on the simulator
 recording. Every capture records its ROS context (message frames, topics and
-QoS), so a frame or QoS fix is `verified on recording`, as in
-`03_qos_mismatch` and `04_lidar_frame_not_in_urdf`. A fix a recording can't
-show stays `unverified`, such as a pluginlib plugin name in
-`01_nav2_planner_fails_to_initialize`. The recording's lidar mount check runs
-in every case and passes.
+QoS), so a topic, frame or QoS fix is `verified on recording`, as in
+`02_amcl_wrong_scan_topic`, `03_qos_mismatch` and `04_lidar_frame_not_in_urdf`.
+A capture made without a namespace is read in the robot's own namespace, so
+the namespaced robot in `02` and `05` replays against it. A fix a recording
+can't show stays `unverified`, such as a pluginlib plugin name (`01`) or where
+the robot starts on the map (`05`). The recording's lidar mount check runs in
+every case and passes.

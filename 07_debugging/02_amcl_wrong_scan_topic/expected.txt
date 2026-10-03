@@ -1,7 +1,10 @@
 [amcl_no_scans]
 +    scan_topic: /tb3_1/scan
 checked against the configuration: amcl_no_scans is gone and nothing new appears
-was made in the simulator and carries no message frames, topic names or QoS to check this against
+verified on recording
+topics pass
+was made under namespace /, but the robot runs under /tb3_1 (its declared topics)
+/scan as /tb3_1/scan
 the URDF's base_scan mount gives the sharpest map
 [tool] diagnose_stack
 wrote: nav2_params.yaml
