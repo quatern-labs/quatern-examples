@@ -1,2 +1,4 @@
 base:wheel_odom vs visual_odom
 NOT READY
+wheel_odom is the outlier on base
+base:imu vs scan

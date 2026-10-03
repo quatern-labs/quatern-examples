@@ -4,3 +4,5 @@ verdict: READY
 [7/7] Deploy in the simulator, behind the gate and the watchdog
 COMPLETED (STOP_OBSERVED)
 Quickstart complete
+imu (imu, cross-checks base), scan (laserscan, cross-checks base)
+cross-checks wheel_odom vs scan

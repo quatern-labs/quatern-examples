@@ -2,8 +2,9 @@
 
 Quatern doesn't trust a localizer's opinion of itself. It replays a recorded
 capture through the code in a sandbox, then computes the signals itself:
-drift, loop closures, and **cross-checks** between every pair of sources that
-estimate the same motion. A stack is `READY` only when those pass and the
+drift, loop closures, and **cross-checks** between every pair of independent
+sources on the same motion: odometry, and the lidar and IMU that check it. A
+stack is `READY` only when those pass and the
 planner reaches the goal on the map they built.
 
 | Example | What it shows | Needs |

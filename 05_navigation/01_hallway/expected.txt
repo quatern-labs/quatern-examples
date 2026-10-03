@@ -2,3 +2,5 @@ goal: Drive down the hallway to (8.0, 0.6)
 localization: drift at end
 verdict: READY
 COMPLETED (STOP_OBSERVED)
+cross-checks wheel_odom vs imu
+imu vs scan

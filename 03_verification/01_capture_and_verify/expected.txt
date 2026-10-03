@@ -1,2 +1,4 @@
 base:wheel_odom vs visual_odom
 verdict: READY for the deploy gate
+base:imu vs scan
+(warn > 0.12, fail > 0.25)

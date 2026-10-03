@@ -44,7 +44,7 @@ Real REPL session, trimmed. Paths and the toolchain lines depend on your machine
 quatern (no robot / -) > /init --urdf my_rover.urdf --mobile-base base_link --odometry yes --backend sim2d --yes
 wrote ~/.quatern/robots/my_rover.urdf
 wrote ~/.quatern/robots/my_rover.quatern.json
-  Robot my_rover (instance default): 3 DOF — base/x (unbounded) m, base/y (unbounded) m, base/yaw (unbounded) rad. Sensors: base_odom (odometry, estimates base), scan (laserscan). Plans in grid2d over group 'base'.
+  Robot my_rover (instance default): 3 DOF — base/x (unbounded) m, base/y (unbounded) m, base/yaw (unbounded) rad. Sensors: base_odom (odometry, estimates base), scan (laserscan, cross-checks base). Plans in grid2d over group 'base'.
 robot my_rover selected; target sim2d:sim
 quatern (my_rover / sim2d:sim) > /doctor
 quatern doctor — my_rover (instance default, target sim)
@@ -73,7 +73,10 @@ instead:
   conservative default limits (0.5 m/s, 1.0 rad/s). Replace them with your
   robot's real numbers.
 - `sensors` lists `scan` as a `laserscan` on `laser_link`, which the URDF told
-  it, plus `base_odom`, which your answer added.
+  it, plus `base_odom`, which your answer added. `base_odom` has
+  `"estimates": "base"`. `scan` has `"corroborates": "base"`: on a mobile base,
+  `init` makes a 2D lidar (or an IMU) a cross-check of the odometry.
+  Verification compares the odometry with a scan-to-map match of the lidar.
 - `planning.space` is `grid2d` with `mapping.source` `scan`. That works because
   there's a mobile base and a range sensor. Without a range sensor (and with
   no bounded joints to plan in instead), `init` refuses and says why.
