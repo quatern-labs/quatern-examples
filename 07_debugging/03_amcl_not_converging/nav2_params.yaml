@@ -1,0 +1,22 @@
+# AMCL for a TurtleBot 3 Burger brought up under the namespace tb3_1.
+# Trimmed to the part this case needs.
+amcl:
+  ros__parameters:
+    use_sim_time: false
+    base_frame_id: "base_footprint"
+    odom_frame_id: "odom"
+    global_frame_id: "map"
+    robot_model_type: "nav2_amcl::DifferentialMotionModel"
+    laser_model_type: "likelihood_field"
+    laser_max_range: 3.5
+    max_beams: 60
+    min_particles: 500
+    max_particles: 2000
+    update_min_d: 0.25
+    update_min_a: 0.2
+    set_initial_pose: true
+    initial_pose:
+      x: 0.0
+      y: 0.0
+      yaw: 0.0
+    scan_topic: /scan

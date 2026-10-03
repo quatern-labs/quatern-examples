@@ -41,6 +41,7 @@ directory first: `export QUATERN_DATA_DIR=$(mktemp -d)`.
 | 4 | [`04_safety`](04_safety/) | The deploy gate, the watchdog stopping a run when you inject a fault, and reading an ABORTED run record | Nothing |
 | 5 | [`05_navigation`](05_navigation/) | Hallway and room worlds: plan, deploy, keep drift in bounds | Nothing |
 | 6 | [`06_perception`](06_perception/) | "Stop for obstacles using the lidar", asked of the agent | Sign-in (free) or an Anthropic key |
+| 7 | [`07_debugging`](07_debugging/) | Case studies: a Nav2 planner that won't load, a lidar frame the URDF lacks, AMCL that never converges, a QoS mismatch. `quatern diagnose` and the agent on each, including where they fall short | Sign-in (free) or an Anthropic key |
 | | [`misc`](misc/) | Anything that doesn't fit the tour yet | |
 
 **Needs** is one of:

@@ -1,0 +1,18 @@
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [controller_server-1]: process started with pid [4139]
+[INFO] [planner_server-2]: process started with pid [4141]
+[INFO] [lifecycle_manager-3]: process started with pid [4143]
+[lifecycle_manager-3] [INFO] [1759396447.902114620] [lifecycle_manager_navigation]: Creating
+[lifecycle_manager-3] [INFO] [1759396447.911580473] [lifecycle_manager_navigation]: Starting managed nodes bringup...
+[lifecycle_manager-3] [INFO] [1759396447.911702215] [lifecycle_manager_navigation]: Configuring controller_server
+[controller_server-1] [INFO] [1759396447.912876039] [controller_server]: Configuring controller interface
+[controller_server-1] [INFO] [1759396447.931145820] [controller_server]: Created controller : FollowPath of type dwb_core::DWBLocalPlanner
+[controller_server-1] [INFO] [1759396448.004237716] [controller_server]: Controller frequency set to 20.0000Hz
+[lifecycle_manager-3] [INFO] [1759396448.015530172] [lifecycle_manager_navigation]: Configuring planner_server
+[planner_server-2] [INFO] [1759396448.016023841] [planner_server]: Configuring
+[planner_server-2] [INFO] [1759396448.016291007] [global_costmap.global_costmap]: Configuring
+[planner_server-2] [INFO] [1759396448.033417592] [global_costmap.global_costmap]: Using plugin "static_layer"
+[planner_server-2] [INFO] [1759396448.041872630] [global_costmap.global_costmap]: Using plugin "inflation_layer"
+[planner_server-2] [FATAL] [1759396448.052906114] [planner_server]: Failed to create global planner. Exception: According to the loaded plugin descriptions the class nav2_navfn_planner::NavfnPlanner with base class type nav2_core::GlobalPlanner does not exist. Declared types are  nav2_navfn_planner/NavfnPlanner nav2_smac_planner/SmacPlanner2D nav2_smac_planner/SmacPlannerHybrid nav2_smac_planner/SmacPlannerLattice nav2_theta_star_planner/ThetaStarPlanner
+[lifecycle_manager-3] [ERROR] [1759396448.053570988] [lifecycle_manager_navigation]: Failed to change state for node: planner_server
+[lifecycle_manager-3] [ERROR] [1759396448.053614270] [lifecycle_manager_navigation]: Failed to bring up all requested nodes. Aborting bringup.

@@ -1,0 +1,8 @@
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [hlds_laser_publisher-1]: process started with pid [6024]
+[INFO] [scan_guard-2]: process started with pid [6026]
+[hlds_laser_publisher-1] [INFO] [1759399530.118026644] [hlds_laser_publisher]: Init hlds_laser_publisher Node Main
+[hlds_laser_publisher-1] [INFO] [1759399530.118405193] [hlds_laser_publisher]: port : /dev/ttyUSB0 frame_id : base_scan
+[scan_guard-2] [INFO] [1759399530.402316657] [scan_guard]: stop_distance 0.25 m, subscribing to /scan with the default QoS (reliable, keep last 10)
+[scan_guard-2] [WARN] [1759399530.410881920] [scan_guard]: New publisher discovered on topic '/scan', offering incompatible QoS. No messages will be sent to it. Last incompatible policy: RELIABILITY_QOS_POLICY
+[scan_guard-2] [WARN] [1759399535.403550012] [scan_guard]: no scan for 5.0 s on /scan; holding zero velocity
