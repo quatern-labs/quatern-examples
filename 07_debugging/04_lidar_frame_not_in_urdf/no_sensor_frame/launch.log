@@ -1,0 +1,17 @@
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [robot_state_publisher-1]: process started with pid [5210]
+[INFO] [rplidar_node-2]: process started with pid [5212]
+[INFO] [controller_server-3]: process started with pid [5214]
+[robot_state_publisher-1] [INFO] [1759398102.417728301] [robot_state_publisher]: got segment base_link
+[robot_state_publisher-1] [INFO] [1759398102.417806912] [robot_state_publisher]: got segment base_scan
+[robot_state_publisher-1] [INFO] [1759398102.417833540] [robot_state_publisher]: got segment imu_link
+[rplidar_node-2] [INFO] [1759398102.502261874] [rplidar_node]: RPLidar running on ROS2 package rplidar_ros. RPLIDAR SDK Version:2.0.0
+[rplidar_node-2] [INFO] [1759398102.611904227] [rplidar_node]: RPLidar health status : OK.
+[rplidar_node-2] [INFO] [1759398102.612003816] [rplidar_node]: current scan mode: Sensitivity, sample rate: 8 Khz, max_distance: 12.0 m, scan frequency:10.0 Hz, frame_id: laser
+[controller_server-3] [INFO] [1759398103.020417332] [local_costmap.local_costmap]: Using plugin "obstacle_layer"
+[controller_server-3] [INFO] [1759398103.024883719] [local_costmap.local_costmap]: Subscribed to Topics: scan
+[controller_server-3] [INFO] [1759398103.031120458] [local_costmap.local_costmap]: Using plugin "inflation_layer"
+[controller_server-3] [INFO] [1759398103.047731906] [local_costmap.local_costmap]: Initialized plugin "inflation_layer"
+[controller_server-3] [INFO] [1759398108.240513087] [local_costmap.local_costmap]: Message Filter dropping message: frame 'laser' at time 1759398108.112 for reason 'discarding message because the queue is full'
+[controller_server-3] [INFO] [1759398108.341207652] [local_costmap.local_costmap]: Message Filter dropping message: frame 'laser' at time 1759398108.212 for reason 'discarding message because the queue is full'
+[controller_server-3] [WARN] [1759398113.025339814] [local_costmap.local_costmap]: The scan observation buffer has not been updated for 10.00 seconds, and it should be updated every 0.20 seconds.

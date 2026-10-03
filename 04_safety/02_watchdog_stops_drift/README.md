@@ -34,41 +34,46 @@ metres or `base/rad` in radians) varies from run to run.
 
 ```text
 gate confirmed; deploying...
-  t=  0.0s  deviation base 0.104
-  t=  1.0s  deviation base/rad 0.563
-  t=  2.1s  deviation base/rad 0.460
-  t=  3.4s  deviation base 0.753
-RECEIPT rcpt_sim_diffbot.default_20261002T063434759729: ABORTED (STOP_OBSERVED)
-  e-stop: not declared (software stop layers only)
-  abort: deviation_state:base — the robot reports base 0.585 from the plan (limit 0.500)
-  stop: observed 0.25s after the stop request, travel after stop 0.222 (by watchdog)
-  max deviation base: 0.753
-  max deviation base/rad: 0.676
+  t=  0.0s  deviation base 0.061
+  t=  1.1s  deviation base/rad 0.584
+  t=  2.1s  deviation base/rad 0.432
+  t=  3.1s  deviation base/rad 0.535
+RECEIPT rcpt_sim_diffbot.default_20261003T031912209427: ABORTED (STOP_OBSERVED)
+  abort: deviation_state:base — the robot reports base 0.609 from the plan (limit 0.500)
+  stop: observed 0.12s after the stop request, travel after stop 0.168, turn after stop 0.000 rad (by watchdog)
+  max deviation base: 0.685
+  max deviation base/rad: 0.678
+  live base:localizer vs wheel_odom: 35.9%
+  live base:localizer vs visual_odom: 19.5%
+  live base:predicted vs measured: 27.8%
+  performance (TARGET): 53892 Hz sustainable vs 17 Hz input, CPU 12%, sandbox tier none, command-to-actuation 0.062s
+  localizer: python, run `python3 node.py`, source d5858ab01352, tier none
+  planner: python, run `python3 node.py`, source a1dffbc91c0f, tier none
 ```
 
 `read_receipt.py`:
 
 ```text
-receipt:        rcpt_sim_diffbot.default_20261002T063434759729
+receipt:        rcpt_sim_diffbot.default_20261003T031912209427
 target:         sim_drift (hardware: False, evidence: SIMULATION)
 final_state:    ABORTED
 acknowledgement: STOP_OBSERVED
 transitions:
   REQUEST_ACCEPTED     preconditions passed
   COMMAND_DISPATCHED   first command sent
-  EFFECT_OBSERVED      base/x responded 0.050s after the first command
-  STOP_OBSERVED        stop observed by watchdog 0.25s after the stop
+  EFFECT_OBSERVED      base/x responded 0.062s after the first command
+  STOP_OBSERVED        stop observed by watchdog 0.12s after the stop
   ABORTED              deviation_state:base
 abort:
   check:      deviation_state
   reason:     deviation_state:base
-  detail:     the robot reports base 0.585 from the plan (limit 0.500)
+  detail:     the robot reports base 0.609 from the plan (limit 0.500)
   stopped_by: watchdog
 stop:
-  observed: True after 0.247s, travel after stop 0.2219 m
+  observed: True after 0.121s, travel after stop 0.1684 m
   bounded travel promised at the gate: 0.4 m worst case
-deviation_max:  {"base": 0.7531, "base/rad": 0.6762}
-live_checks.fired: deviation_state at t=4.163s
+deviation_max:  {"base": 0.6851, "base/rad": 0.6782}
+live_checks.fired: deviation_state at t=4.055s
 ```
 
 ## Reading an ABORTED run record
@@ -83,7 +88,7 @@ write-once and plain JSON.
 - **`acknowledgement: STOP_OBSERVED`**: the stop was confirmed from the
   robot's state, not just sent.
 - **`transitions`**: the run's timeline. Here the effect of the first command
-  was seen 0.05 s after dispatch, and the stop 0.25 s after it was requested.
+  was seen 0.062 s after dispatch, and the stop 0.12 s after it was requested.
 - **`abort`**: which watchdog check fired (`check`), the machine-readable
   `reason`, a human `detail`, and `stopped_by`. `deviation_state` means the
   robot's *own* reported state left the plan. `deviation` (no suffix) means

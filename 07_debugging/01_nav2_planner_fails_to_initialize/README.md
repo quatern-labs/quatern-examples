@@ -76,7 +76,7 @@ Trimmed.
             use_astar: false
             allow_unknown: true
    - checked against the configuration: planner_plugin_unknown is gone and nothing new appears
-   - not replayable on turtlebot3_burger.default_2026-10-03_room_v1: only the ROS 2 stack itself can run this change
+   - unverified: recording turtlebot3_burger.default_2026-10-03_room_v1 was made in the simulator and carries no message frames, topic names or QoS to check this against; a rosbag2 of the robot can (--bag)
 
 note: mount check passed on turtlebot3_burger.default_2026-10-03_room_v1: the URDF's base_scan mount gives the sharpest map (+0 deg: 36.1, +90 deg: 4.0, +180 deg: 4.0, -90 deg: 4.0)
 nothing written; --write applies the checked fixes
@@ -88,18 +88,16 @@ nothing written; --write applies the checked fixes
 [tool] diagnose_stack {"files": ["launch.log", "nav2_params.yaml"], "robot": "turtlebot3_burger"}
 [tool] propose_fix {"files": ["launch.log", "nav2_params.yaml"], "cause": "planner_plugin_unknown", "subject": "nav2_navfn_planner::NavfnPlanner", "file": "nav2_params.yaml", "...
 [result] propose_fix {"accepted":true,"cause":"planner_plugin_unknown","subject":"nav2_navfn_planner::NavfnPlanner","file":"nav2_params.ya...
-`diagnose_stack` found one root cause. It is a bad plugin name in `nav2_params.yaml`. The fix is checked against the configuration only and has not been run on a real stack.
+`diagnose_stack` found one root cause. The fix below passed the configuration check but has not been replayed on a recording.
 
-## Root cause: `planner_plugin_unknown`
-The global planner plugin is written as `nav2_navfn_planner::NavfnPlanner`. pluginlib expects a slash between the package and the class, not C++-style `::`. Plugin names are case-sensitive and must match exactly.
+## Root cause: the planner plugin name is wrong (`planner_plugin_unknown`)
 [...]
-## Fix
-This is the diff `diagnose_stack` returned. My own `propose_fix` call, setting `planner_server.ros__parameters.GridBased.plugin`, produced the identical diff and was accepted.
+**Fix**
+Quatern's reference fix is correct. I submitted the same change to `propose_fix` as my own parameter set, and it was accepted with the identical diff:
 [...]
-## What was and wasn't checked
-- **Checked against the configuration:** the `planner_plugin_unknown` finding is gone and no new finding appears.
-- **Not replayed on a recording:** both tools report `verified: false`. They could not replay this change on `turtlebot3_burger.default_2026-10-03_room_v1`, because only the ROS 2 stack itself can run it.
-- **Next step for you:** relaunch Nav2 with the edited file. If the planner configures, the log should no longer show the `[FATAL] Failed to create global planner` line. Other problems that the planner failure was hiding could show up once it starts.
+**What was checked**
+- The checks say that `planner_plugin_unknown` is gone and nothing new appears. That is a check against the configuration only.
+- It is **unverified** against a recording. The only recording, `turtlebot3_burger.default_2026-10-03_room_v1`, comes from the simulator. It has no message frames, topic names or QoS to replay against. A rosbag2 of the real robot, passed with `--bag`, would let me replay it.
 ```
 
 After `--write`, diagnose again:
@@ -113,8 +111,10 @@ note: mount check passed on turtlebot3_burger.default_2026-10-03_room_v1: the UR
 The agent's wording changes from run to run. Its tool calls and the diff
 don't.
 
-The fix is checked against the configuration. It was not replayed on the
-recording. The recording's lidar mount check passed.
+The fix is checked against the configuration. On the recording it is
+`unverified`: a simulator recording carries no message frames, topic names or
+QoS to check it against, and a rosbag2 of the robot (`--bag`) can. The
+recording's lidar mount check passed.
 
 ## What to look for in the run record
 

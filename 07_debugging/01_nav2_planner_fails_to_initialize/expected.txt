@@ -1,7 +1,7 @@
 [planner_plugin_unknown]
 +      plugin: "nav2_navfn_planner/NavfnPlanner"
 checked against the configuration: planner_plugin_unknown is gone and nothing new appears
-only the ROS 2 stack itself can run this change
+was made in the simulator and carries no message frames, topic names or QoS to check this against
 the URDF's base_scan mount gives the sharpest map
 [tool] diagnose_stack
 wrote: nav2_params.yaml

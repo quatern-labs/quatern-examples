@@ -1,0 +1,14 @@
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [map_server-1]: process started with pid [8102]
+[INFO] [amcl-2]: process started with pid [8104]
+[INFO] [lifecycle_manager-3]: process started with pid [8106]
+[map_server-1] [INFO] [1759402011.512330716] [map_server]: Read map map.pgm: 384 X 384 map @ 0.05 m/cell
+[amcl-2] [INFO] [1759402011.590417221] [amcl]: Configuring
+[amcl-2] [INFO] [1759402011.612805339] [amcl]: initPubSub
+[amcl-2] [INFO] [1759402011.618341027] [amcl]: Subscribed to map topic.
+[amcl-2] [INFO] [1759402011.681225740] [amcl]: Activating
+[lifecycle_manager-3] [INFO] [1759402011.783009118] [lifecycle_manager_localization]: Managed nodes are active
+[amcl-2] [INFO] [1759402012.104117632] [amcl]: Received a 384 X 384 map @ 0.050 m/pix
+[amcl-2] [WARN] [1759402013.120665418] [amcl]: ACML cannot publish a pose or update the transform. Please set the initial pose...
+[amcl-2] [WARN] [1759402015.121003876] [amcl]: ACML cannot publish a pose or update the transform. Please set the initial pose...
+[amcl-2] [WARN] [1759402017.120872201] [amcl]: ACML cannot publish a pose or update the transform. Please set the initial pose...
