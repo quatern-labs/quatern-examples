@@ -30,33 +30,39 @@ the simulated run.
 Trimmed (the map is cut).
 
 ```text
-pinned stk_sim_diffbot.default_20261002T063419506850 as last-known-good for sim_diffbot (verified on instance default)
+pinned stk_sim_diffbot.default_20261003T031856708707 as last-known-good for sim_diffbot (verified on instance default)
 DEPLOY GATE
   robot:      sim_diffbot (instance default)
   target:     sim (sim2d, not hardware)
-  stack:      stk_sim_diffbot.default_20261002T063419506850 [ready] from capture sim_diffbot.default_2026-10-02_room_v1
-  plan:       36 waypoints over 2.59 in grid2d
-  max speed:  1.764 rad/s on base/yaw (limit 2.000)
-  duration:   8.2 s predicted
+  stack:      stk_sim_diffbot.default_20261003T031856708707 [ready] from capture sim_diffbot.default_2026-10-03_room_v1
+  plan:       36 waypoints over 2.57 in grid2d
+  max speed:  1.725 rad/s on base/yaw (limit 2.000)
+  duration:   9.7 s predicted
   will abort on:
     - the localizer's estimate, or the robot's own state, off the plan by more than: base 0.5, base/rad 0.8
     - the localizer disagreeing with a source or with the plan past critical (planar 30%) for 5 ticks in a row, once moving 0.5 s
     - no estimate from the localizer for 0.50 s
     - a stream stale (0.50 s, or two periods of a slower source) or under 30% of its rate
-    - any DOF outside its URDF bounds or over its velocity limit: base/x 0.5, base/y 0.5, base/yaw 2
+    - any DOF outside its URDF bounds (3 readings in a row, or 0.01 past at once) or over its velocity limit: base/x 0.5, base/y 0.5, base/yaw 2
     - the scan disagreeing with the map (under 35% on mapped structure for 5 scans in a row)
     - an obstacle in the planned path that the map did not have, or a drop-off ahead
   bounded travel after an abort (m, worst case on base/x):
     watchdog path 0.175   silence path 0.400   (v_max 0.5, brake 1, detect 0.100s)
+    turning (rad, on base/yaw): watchdog path 0.867   silence path 1.767   (v_max 2, brake 3)
   PLACEHOLDERS in the travel inputs (a hardware target refuses):
     - brake_decel not measured: defaulted to max_linear_acceleration
-  map:        sim_diffbot.default_2026-10-02_room_v1, 0.0 h old
+  map:        sim_diffbot.default_2026-10-03_room_v1, 0.0 h old
+  localizer:  python module, run `python3 node.py`, source d5858ab01352
+  planner:  python module, run `python3 node.py`, source a1dffbc91c0f
   sandbox:    tier none (resource limits always enforced)
 
-.......#......**G.........##......
-.......#......*###........##......
-.......#.....**####.......##......
+.......#.......*G.........#.......
+......##......*...........#.......
+......##.....*#####.......#.......
 ......##.....*##.##.......#.......
+......##.....*#####.......#.......
+......##....*.............#.......
+......##....*.............#.......
 ......##....S.............#.......
 (0.30 m per character; origin (-3.8, -3.6); # occupied, * path, S start, G goal)
 error: Proceed past the gate? THE ROBOT WILL MOVE. — no terminal to ask on; pass --yes to confirm
@@ -69,7 +75,8 @@ error: Proceed past the gate? THE ROBOT WILL MOVE. — no terminal to ask on; pa
 - **Bounded travel**: how far the robot can still go after an abort. The
   watchdog path is when the watchdog stops it. The silence path is when
   everything on the host dies and the robot's own command-silence cut has to
-  stop it.
+  stop it. The `turning` line is the same bound for rotation, in radians on
+  `base/yaw`.
 - **`PLACEHOLDERS`**: an input to that bound that was never measured. The
   simulator proceeds anyway. A hardware target refuses until it's measured.
 - No receipt is written, because nothing was dispatched. Answer `y` and the

@@ -1,0 +1,9 @@
+# Parameters for the RPLIDAR driver (rplidar_ros) on the TurtleBot 3.
+rplidar_node:
+  ros__parameters:
+    serial_port: /dev/ttyUSB0
+    serial_baudrate: 115200
+    frame_id: laser
+    inverted: false
+    angle_compensate: true
+    scan_mode: Sensitivity

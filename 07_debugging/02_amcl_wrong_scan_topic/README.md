@@ -65,7 +65,7 @@ Trimmed.
      -    scan_topic: /scan
      +    scan_topic: /tb3_1/scan
    - checked against the configuration: amcl_no_scans is gone and nothing new appears
-   - not replayable on turtlebot3_burger.default_2026-10-03_room_v1: only the ROS 2 stack itself can run this change
+   - unverified: recording turtlebot3_burger.default_2026-10-03_room_v1 was made in the simulator and carries no message frames, topic names or QoS to check this against; a rosbag2 of the robot can (--bag)
 
 note: mount check passed on turtlebot3_burger.default_2026-10-03_room_v1: the URDF's base_scan mount gives the sharpest map (+0 deg: 36.1, +90 deg: 4.0, +180 deg: 4.0, -90 deg: 4.0)
 nothing written; --write applies the checked fixes
@@ -77,19 +77,16 @@ nothing written; --write applies the checked fixes
 [tool] diagnose_stack {"files": ["launch.log", "nav2_params.yaml", "topics.txt"], "robot": "turtlebot3_burger"}
 [tool] propose_fix {"files": ["launch.log", "nav2_params.yaml", "topics.txt"], "cause": "amcl_no_scans", "subject": "amcl:/scan", "file": "nav2_params.yaml", "set": {"key": ["a...
 [result] propose_fix {"accepted":true,"cause":"amcl_no_scans","subject":"amcl:/scan","file":"nav2_params.yaml","diff":"--- a/nav2_params.y...
-`diagnose_stack` returned one root cause for this stack, and the fix for it checks out against the configuration. It has not been run on a live ROS 2 graph.
+`diagnose_stack` returned one finding for turtlebot3_burger, and the fix for it is not yet tested against a real recording.
 
-## Root cause: AMCL listens on `/scan`, but the lidar publishes on `/tb3_1/scan`
+## Root cause: AMCL listens on a topic nobody publishes (`amcl_no_scans`, error)
 [...]
-The robot is namespaced as `tb3_1`, but the AMCL parameter still holds the default un-namespaced topic.
-
-## Fix
-
-Quatern's reference fix and my own via `propose_fix` give the same diff. `propose_fix` accepted it with `amcl_no_scans` gone and nothing new appearing:
-
--    scan_topic: /scan
-+    scan_topic: /tb3_1/scan
+Quatern's fix is correct, and my own check with `propose_fix` produced the identical diff:
 [...]
+## How far the fix is checked
+
+- **Checked against the configuration:** the `amcl_no_scans` cause is gone and nothing new appears.
+- **Not replayed on a recording:** the only recording, `turtlebot3_burger.default_2026-10-03_room_v1`, comes from the simulator. It has no topic names, frames or QoS to replay against, so the fix is **unverified**. A rosbag2 from the real robot, passed as `--bag`, would let me replay it.
 ```
 
 After `--write`, diagnose again:
@@ -103,15 +100,17 @@ note: mount check passed on turtlebot3_burger.default_2026-10-03_room_v1: the UR
 The agent's wording changes from run to run. Its tool calls and the diff
 don't.
 
-The fix is checked against the configuration. It was not replayed on the
-recording. The recording's lidar mount check passed.
+The fix is checked against the configuration. On the recording it is
+`unverified`: a simulator recording carries no message frames, topic names or
+QoS to check it against, and a rosbag2 of the robot (`--bag`) can. The
+recording's lidar mount check passed.
 
 ## What to look for in the run record
 
 Diagnose writes no receipt or stack. For a record, run it with `--json`.
 `findings[0].cause` is `amcl_no_scans`, `findings[0].evidence` includes the
 `topics` entry, and `findings[0].fix.verified` is `false`, with `fix.checks`
-listing *checked against the configuration* and *not replayable*. `notes`
+listing *checked against the configuration* and *unverified*. `notes`
 holds the mount check and `written` lists the files `--write` changed.
 
 ## Docs
