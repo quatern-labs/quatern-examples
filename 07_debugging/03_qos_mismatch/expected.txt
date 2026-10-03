@@ -1,0 +1,9 @@
+[qos_incompatible]
++          reliability: best_effort
+checked against the configuration: qos_incompatible is gone and nothing new appears
+only the ROS 2 stack itself can run this change
+a node that does not declare overrides ignores it
+the URDF's base_scan mount gives the sharpest map
+[tool] diagnose_stack
+wrote: scan_guard.yaml
+no root cause found in launch.log, scan_guard.yaml

@@ -1,0 +1,18 @@
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [map_server-1]: process started with pid [7311]
+[INFO] [amcl-2]: process started with pid [7313]
+[INFO] [lifecycle_manager-3]: process started with pid [7315]
+[map_server-1] [INFO] [1759401220.130462118] [map_server]: Loading yaml file: map.yaml
+[map_server-1] [INFO] [1759401220.161907345] [map_server]: Read map map.pgm: 384 X 384 map @ 0.05 m/cell
+[lifecycle_manager-3] [INFO] [1759401220.204410876] [lifecycle_manager_localization]: Configuring amcl
+[amcl-2] [INFO] [1759401220.205013544] [amcl]: Configuring
+[amcl-2] [INFO] [1759401220.211278630] [amcl]: initTransforms
+[amcl-2] [INFO] [1759401220.230774102] [amcl]: initPubSub
+[amcl-2] [INFO] [1759401220.236001983] [amcl]: Subscribed to map topic.
+[lifecycle_manager-3] [INFO] [1759401220.301229715] [lifecycle_manager_localization]: Activating amcl
+[amcl-2] [INFO] [1759401220.301705590] [amcl]: Activating
+[amcl-2] [INFO] [1759401220.301801265] [amcl]: initialPoseReceived
+[amcl-2] [INFO] [1759401220.302118709] [amcl]: Setting pose (1759401220.302112): 0.000 0.000 0.000
+[lifecycle_manager-3] [INFO] [1759401220.404583120] [lifecycle_manager_localization]: Managed nodes are active
+[amcl-2] [WARN] [1759401235.302440901] [amcl]: No laser scan received (and thus no pose updates have been published) for 15.000000 seconds.  Verify that data is being published on the /scan topic.
+[amcl-2] [WARN] [1759401250.302512367] [amcl]: No laser scan received (and thus no pose updates have been published) for 30.000000 seconds.  Verify that data is being published on the /scan topic.

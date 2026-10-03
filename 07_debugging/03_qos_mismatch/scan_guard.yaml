@@ -1,0 +1,8 @@
+# Parameters for scan_guard, a small node that stops the robot when the
+# lidar sees something closer than stop_distance.
+scan_guard:
+  ros__parameters:
+    use_sim_time: false
+    scan_topic: /scan
+    stop_distance: 0.25
+    cmd_vel_out: /cmd_vel
