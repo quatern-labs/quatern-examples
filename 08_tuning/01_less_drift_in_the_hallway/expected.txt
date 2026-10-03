@@ -1,0 +1,6 @@
+verdict: READY
+quatern tune — jetson_rover.default: less localization drift ('less drift in the hallway')
+metric: drift_at_end, how far the localizer's pose ends from where the recording says the robot was
+jetson_rover.default_2026-
+changes:
+nothing was applied: --out writes the tuned module, --save verifies it as a stack; only `quatern deploy` runs one

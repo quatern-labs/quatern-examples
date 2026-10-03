@@ -42,6 +42,10 @@ directory first: `export QUATERN_DATA_DIR=$(mktemp -d)`.
 | 5 | [`05_navigation`](05_navigation/) | Hallway and room worlds: plan, deploy, keep drift in bounds | Nothing |
 | 6 | [`06_perception`](06_perception/) | "Stop for obstacles using the lidar", asked of the agent | Sign-in (free) or an Anthropic key |
 | 7 | [`07_debugging`](07_debugging/) | Case studies: a Nav2 planner that won't load, AMCL on the wrong scan topic, a QoS mismatch, a lidar frame the URDF lacks, AMCL with no initial pose. `quatern diagnose` and the agent on each | Sign-in (free) or an Anthropic key |
+| 8 | [`08_tuning`](08_tuning/) | "Less drift in the hallway" in your own words: parameter changes replayed on recordings, with before/after numbers | Nothing |
+| 9 | [`09_regression_ci`](09_regression_ci/) | Replay saved recordings against every change and fail CI on a regression, with the GitHub Actions workflow | Nothing |
+| 10 | [`10_bringup`](10_bringup/) | The pre-drive checklist catching a wrong scanner frame, writing the checked fix, then passing | Nothing |
+| 11 | [`11_hardware_profile`](11_hardware_profile/) | Describe a hobby robot's parts in plain English: the profile, the PWM cap, `WIRING.md` and the firmware | Nothing |
 | | [`misc`](misc/) | Anything that doesn't fit the tour yet | |
 
 **Needs** is one of:
@@ -52,7 +56,8 @@ directory first: `export QUATERN_DATA_DIR=$(mktemp -d)`.
   for free monthly usage on Quatern's hosted API, or set `ANTHROPIC_API_KEY`
   to use your own key.
 
-Everything here runs in simulation. Moving a real robot is covered by
+Everything here runs in simulation, or (example 11) generates files without
+touching a robot. Moving a real robot is covered by
 `quatern hardware --robot <name>` and the
 [setup docs](https://quatern.co/docs/setup/#from-the-simulator-to-the-real-robot).
 
