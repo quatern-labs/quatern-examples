@@ -16,8 +16,10 @@ None is copied from anyone's robot. Each case says so at the top.
 | [`04_lidar_frame_not_in_urdf`](04_lidar_frame_not_in_urdf/) | The lidar driver stamps scans `laser`, the URDF has `base_scan`, and the costmap drops every scan. With and without `sensor_frame` in the costmap. | Sign-in (free) or an Anthropic key |
 | [`05_amcl_no_initial_pose`](05_amcl_no_initial_pose/) | AMCL has its map and scans but no initial pose, so it never publishes `map -> odom`. | Sign-in (free) or an Anthropic key |
 
-Each fix is checked against the configuration. On the simulator recording
-diagnose labels every one `unverified`: a simulator recording carries no
-message frames, topic names or QoS to check a fix against, and a rosbag2 of the
-robot (`--bag`) can. The recording's lidar mount check runs in every case and
-passes.
+Each fix is checked against the configuration, then replayed on the simulator
+recording. Every capture records its ROS context (message frames, topics and
+QoS), so a frame or QoS fix is `verified on recording`, as in
+`03_qos_mismatch` and `04_lidar_frame_not_in_urdf`. A fix a recording can't
+show stays `unverified`, such as a pluginlib plugin name in
+`01_nav2_planner_fails_to_initialize`. The recording's lidar mount check runs
+in every case and passes.

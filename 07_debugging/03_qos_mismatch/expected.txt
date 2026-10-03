@@ -1,7 +1,9 @@
 [qos_incompatible]
 +          reliability: best_effort
 checked against the configuration: qos_incompatible is gone and nothing new appears
-was made in the simulator and carries no message frames, topic names or QoS to check this against
+verified on recording
+qos pass
+through the configuration: scan_guard asks for reliable delivery on /scan, which is published best effort
 a node that does not declare overrides ignores it
 the URDF's base_scan mount gives the sharpest map
 [tool] diagnose_stack

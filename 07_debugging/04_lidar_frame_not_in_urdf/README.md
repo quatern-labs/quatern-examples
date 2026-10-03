@@ -99,16 +99,18 @@ Trimmed.
      +  </joint>
       </robot>
    - checked against the configuration: message_frame_not_in_tf is gone and nothing new appears
-   - unverified: recording turtlebot3_burger.default_2026-10-03_room_v1 was made in the simulator and carries no message frames, topic names or QoS to check this against; a rosbag2 of the robot can (--bag)
+   - verified on recording turtlebot3_burger.default_2026-10-03_room_v1: frames pass (frames of 2 recorded topic(s) against the TF tree; 1 subscribed topic(s) against the recording's topics; subscribers' reliability against the QoS each publisher offered)
    also: Or set the driver's frame_id to 'base_scan' (rplidar_ros and most drivers take a frame_id parameter; pass its params file to diagnose and it writes that change instead), and remove sensor_frame from the costmap or set it to the same frame. Check what the driver stamps with: ros2 topic echo --once <topic> --field header.frame_id
 
+note: replayed turtlebot3_burger.default_2026-10-03_room_v1 through the configuration: frames, topics and QoS agree
 note: mount check passed on turtlebot3_burger.default_2026-10-03_room_v1: the URDF's base_scan mount gives the sharpest map (+0 deg: 36.1, +90 deg: 4.0, +180 deg: 4.0, -90 deg: 4.0)
 nothing written; --write applies the checked fixes
 ```
 
 `quatern diagnose ... --agent`. The agent proposed changing the driver's
-`frame_id` instead, and `propose_fix` accepted it. It also tried the matching
-`sensor_frame` change on its own, and `propose_fix` rejected that:
+`frame_id` instead, and `propose_fix` accepted it and verified it on the
+recording. It also tried the matching `sensor_frame` change on its own, and
+`propose_fix` rejected that:
 
 ```text
 [tool] diagnose_stack {"files": ["launch.log", "nav2_params.yaml", "rplidar.yaml", "turtlebot3_burger.urdf"], "robot": "turtlebot3_burger"}
@@ -116,20 +118,18 @@ nothing written; --write applies the checked fixes
 [result] propose_fix {"accepted":true,"cause":"message_frame_not_in_tf","subject":"laser","file":"rplidar.yaml","diff":"--- a/rplidar.yaml...
 [tool] propose_fix {"files": ["launch.log", "nav2_params.yaml", "rplidar.yaml", "turtlebot3_burger.urdf"], "cause": "message_frame_not_in_tf", "subject": "laser", "file": "nav2...
 [result] propose_fix {"accepted":false,"cause":"message_frame_not_in_tf","subject":"laser","reason":"the cause is still there after the fi...
-`diagnose_stack` returned one root cause. Its own fix is a valid option, but I'd use a different one, and neither has been replayed on real data.
+## Fix options
+
+**Option A: Quatern's fix, which adds a `laser` frame to the URDF.** It was verified against the configuration and replayed on the recording.
 [...]
-## Fix 2: my preferred fix, changing the driver's frame (checked with `propose_fix`, accepted)
+**Option B: my fix, which sets the driver's frame to `base_scan`.** I prefer this one. The URDF already has the right frame, so the driver should use it. `propose_fix` accepted it, and it was replayed on the recording. The recorded `laser` frame was read as `base_scan`, and the frame, topic and QoS checks passed.
 -    frame_id: laser
 +    frame_id: base_scan
 [...]
-I prefer this because the TF tree already has `base_scan`, the mount check confirmed its orientation, and the URDF doesn't need a duplicate frame. Use either this fix or Fix 1, not both.
-
-## Follow-up for `nav2_params.yaml`
-After Fix 2, `sensor_frame: laser` at line 22 would still point at a frame that doesn't exist. I tried changing it to `base_scan` on its own, and `propose_fix` rejected it: the cause was still there, because the driver was still stamping `laser`. That is expected. The two edits only work together, and `propose_fix` couldn't check them as a pair because it takes one file or one parameter at a time.
+**Change that does not work: setting only `sensor_frame` in `nav2_params.yaml` to `base_scan`.** `propose_fix` rejected it: "the cause is still there after the fix: scans arrive stamped 'laser'". The scan headers still say `laser`, so the scans are still dropped.
 [...]
-## Verification status
-- **Checked:** against the configuration only. The cause disappears and nothing new appears.
-- **Not verified:** replay against real data. The only recording is from the simulator and has no message frames, topics or QoS, so nothing could be replayed. A rosbag2 of the real robot, passed as `--bag`, would let `diagnose_stack` and `propose_fix` replay it.
+## Caveats
+- Apply either A or B, not both. Both are verified on the recording, but this was not run on the live robot. Replaying the recording and checking the configuration are the only checks done.
 ```
 
 After `--write` (Quatern's URDF fix), diagnose again:
@@ -137,6 +137,7 @@ After `--write` (Quatern's URDF fix), diagnose again:
 ```text
 wrote: turtlebot3_burger.urdf
 no root cause found in launch.log, nav2_params.yaml, rplidar.yaml, turtlebot3_burger.urdf, recording turtlebot3_burger.default_2026-10-03_room_v1
+note: replayed turtlebot3_burger.default_2026-10-03_room_v1 through the configuration: frames, topics and QoS agree
 note: mount check passed on turtlebot3_burger.default_2026-10-03_room_v1: the URDF's base_scan mount gives the sharpest map (+0 deg: 36.1, +90 deg: 4.0, +180 deg: 4.0, -90 deg: 4.0)
 ```
 
@@ -166,26 +167,24 @@ driver's `frame_id`:
           angle_compensate: true
           scan_mode: Sensitivity
    - checked against the configuration: message_frame_not_in_tf is gone and nothing new appears
-   - unverified: recording turtlebot3_burger.default_2026-10-03_room_v1 was made in the simulator and carries no message frames, topic names or QoS to check this against; a rosbag2 of the robot can (--bag)
+   - verified on recording turtlebot3_burger.default_2026-10-03_room_v1: frames pass (frames of 2 recorded topic(s) against the TF tree; 1 subscribed topic(s) against the recording's topics; subscribers' reliability against the QoS each publisher offered; recorded frames 'laser' read as 'base_scan' (the fix changes the driver's frame_id))
    also: The driver then stamps its scans 'base_scan', the URDF's link for the sensor.
 
+note: replayed turtlebot3_burger.default_2026-10-03_room_v1 through the configuration: frames, topics and QoS agree
 note: mount check passed on turtlebot3_burger.default_2026-10-03_room_v1: the URDF's base_scan mount gives the sharpest map (+0 deg: 36.1, +90 deg: 4.0, +180 deg: 4.0, -90 deg: 4.0)
 nothing written; --write applies the checked fixes
 ```
 
-`quatern diagnose ... --agent`:
+`quatern diagnose ... --agent`. The agent used Quatern's verified fix:
 
 ```text
 [tool] diagnose_stack {"files": ["launch.log", "nav2_params.yaml", "rplidar.yaml", "turtlebot3_burger.urdf"], "robot": "turtlebot3_burger"}
-[tool] propose_fix {"files": ["launch.log", "nav2_params.yaml", "rplidar.yaml", "turtlebot3_burger.urdf"], "cause": "message_frame_not_in_tf", "subject": "laser", "file": "rpli...
-[result] propose_fix {"accepted":true,"cause":"message_frame_not_in_tf","subject":"laser","file":"rplidar.yaml","diff":"--- a/rplidar.yaml...
-`diagnose_stack` returned one finding, and I found no other root cause. The fix is checked against the configuration only. It is not replayed on a recording, so treat it as unverified.
+[result] diagnose_stack {"findings":[{"cause":"message_frame_not_in_tf","subject":"laser","severity":"error","summary":"scans arrive stamped ...
+`diagnose_stack` found one root cause in the four files. Its fix was already verified, so I didn't need to write my own or call `propose_fix`.
 [...]
-**Fix:** this is the diff `diagnose_stack` returned. My own `propose_fix` attempt (setting `rplidar_node.ros__parameters.frame_id` to `base_scan`) produced an identical diff. `propose_fix` accepted it:
-[...]
-**What was checked:**
-- Against the configuration, the `message_frame_not_in_tf` finding is gone and nothing new appears.
-- It is **not** replayed on a recording. The only recording, `turtlebot3_burger.default_2026-10-03_room_v1`, came from the simulator. It carries no message frames, topic names or QoS to check against. A rosbag2 from the real robot, passed as `--bag`, would verify it.
+**How it was checked:**
+- **Configuration:** `message_frame_not_in_tf` is gone and nothing new appears.
+- **Recording replay:** I replayed it on `turtlebot3_burger.default_2026-10-03_room_v1`. Frames, topics and QoS all pass, with the recorded `laser` frame read as `base_scan`.
 ```
 
 After `--write`, diagnose again:
@@ -193,14 +192,17 @@ After `--write`, diagnose again:
 ```text
 wrote: rplidar.yaml
 no root cause found in launch.log, nav2_params.yaml, rplidar.yaml, turtlebot3_burger.urdf, recording turtlebot3_burger.default_2026-10-03_room_v1
+note: replayed turtlebot3_burger.default_2026-10-03_room_v1 through the configuration: frames, topics and QoS agree
 note: mount check passed on turtlebot3_burger.default_2026-10-03_room_v1: the URDF's base_scan mount gives the sharpest map (+0 deg: 36.1, +90 deg: 4.0, +180 deg: 4.0, -90 deg: 4.0)
 ```
 
 The agent's wording changes from run to run.
 
-Each fix is checked against the configuration. On the recording it is
-`unverified`: a simulator recording carries no message frames, topic names or
-QoS to check it against, and a rosbag2 of the robot (`--bag`) can. The
+Each fix is checked against the configuration and verified on the recording.
+Every capture records its ROS context: the frame each topic is stamped with,
+the topics and the QoS. Replaying the simulator recording checks the recorded
+frames against the fixed TF tree. With the driver fix, the recorded `laser`
+frame is read as `base_scan`, the frame the fix makes the driver stamp. The
 recording's lidar mount check passed.
 
 ## What to look for in the run record
@@ -208,9 +210,11 @@ recording's lidar mount check passed.
 Diagnose writes no receipt or stack. For a record, run it with `--json`.
 `findings[0].cause` is `message_frame_not_in_tf` and `findings[0].subject` is
 `laser`. `findings[0].fix.file` is the URDF with `sensor_frame` set, and
-`rplidar.yaml` without it. `findings[0].fix.verified` is `false`, and
-`fix.checks` lists *checked against the configuration* and *unverified*.
-`notes` holds the mount check and `written` lists the files `--write` changed.
+`rplidar.yaml` without it. `findings[0].fix.verified` is `true`, and
+`fix.checks` lists *checked against the configuration* and *verified on
+recording*.
+`notes` holds the recording replay and the mount check, and `written` lists the
+files `--write` changed.
 
 ## Docs
 

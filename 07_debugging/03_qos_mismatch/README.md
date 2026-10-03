@@ -67,9 +67,10 @@ Trimmed.
      +        subscription:
      +          reliability: best_effort
    - checked against the configuration: qos_incompatible is gone and nothing new appears
-   - unverified: recording turtlebot3_burger.default_2026-10-03_room_v1 was made in the simulator and carries no message frames, topic names or QoS to check this against; a rosbag2 of the robot can (--bag)
+   - verified on recording turtlebot3_burger.default_2026-10-03_room_v1: qos pass (frames of 2 recorded topic(s) against the TF tree; 1 subscribed topic(s) against the recording's topics; subscribers' reliability against the QoS each publisher offered)
    also: This asks scan_guard to accept best_effort on /scan through ROS 2 QoS overrides; a node that does not declare overrides ignores it, and then the publisher must offer reliability instead.
 
+note: replayed turtlebot3_burger.default_2026-10-03_room_v1 through the configuration: scan_guard asks for reliable delivery on /scan, which is published best effort
 note: mount check passed on turtlebot3_burger.default_2026-10-03_room_v1: the URDF's base_scan mount gives the sharpest map (+0 deg: 36.1, +90 deg: 4.0, +180 deg: 4.0, -90 deg: 4.0)
 nothing written; --write applies the checked fixes
 ```
@@ -78,19 +79,19 @@ nothing written; --write applies the checked fixes
 
 ```text
 [tool] diagnose_stack {"files": ["launch.log", "scan_guard.yaml"], "robot": "turtlebot3_burger"}
-[tool] propose_fix {"files": ["launch.log", "scan_guard.yaml"], "cause": "qos_incompatible", "subject": "scan_guard:/scan", "file": "scan_guard.yaml", "robot": "turtlebot3_burg...
-[result] propose_fix {"accepted":true,"cause":"qos_incompatible","subject":"scan_guard:/scan","file":"scan_guard.yaml","diff":"--- a/scan_...
-`diagnose_stack` found one root cause. The fix below is checked against the configuration only, not replayed on a recording.
+[result] diagnose_stack {"findings":[{"cause":"qos_incompatible","subject":"scan_guard:/scan","severity":"error","summary":"scan_guard and th...
+`diagnose_stack` returned one finding. Its fix was verified, with one caveat about whether scan_guard honors it.
 [...]
-**My own check with `propose_fix`**
-- I set `scan_guard.ros__parameters.qos_overrides./scan.subscription.reliability = best_effort`. It was accepted and produces the identical diff.
-- Checks that passed: `qos_incompatible` is gone and nothing new appears.
-- It is still **unverified**. The recording `turtlebot3_burger.default_2026-10-03_room_v1` came from the simulator. It has no QoS, topic names or message frames to replay against.
+- The replay of recording `turtlebot3_burger.default_2026-10-03_room_v1` agrees. The `/scan` publisher offers best-effort, as sensor drivers usually do.
+[...]
+**Checks it passed**
+- Checked against the configuration: `qos_incompatible` is gone and nothing new appears.
+- Replayed on the recording: the QoS check passes. It compared the subscriber's reliability against what each publisher offered, and checked the subscribed topics against the recording.
 
-**Caveat: this fix may have no effect**
-- ROS 2 only honours `qos_overrides` if the node opted in when it created the subscription. The log says `scan_guard` subscribes "with the default QoS", which hints it may not.
-- If `scan_guard` ignores the override, the mismatch will persist after the edit. The log line 7 warning will still appear on the next launch.
-- The alternative is to change `scan_guard`'s subscription to a sensor-data QoS profile (best-effort) in its source. I can't check that here, because it is code rather than a config file.
+## Caveat
+
+The fix relies on ROS 2 QoS parameter overrides, and only nodes that declare them honor them. The `launch.log` line says scan_guard uses "the default QoS". That suggests custom code, and I can't tell from the log whether it declares overrides. If it doesn't, the YAML edit is silently ignored and the warning persists.
+[...]
 ```
 
 After `--write`, diagnose again:
@@ -98,24 +99,29 @@ After `--write`, diagnose again:
 ```text
 wrote: scan_guard.yaml
 no root cause found in launch.log, scan_guard.yaml, ~/.quatern/robots/turtlebot3_burger.urdf (turtlebot3_burger.default's URDF), recording turtlebot3_burger.default_2026-10-03_room_v1
+note: replayed turtlebot3_burger.default_2026-10-03_room_v1 through the configuration: frames, topics and QoS agree
 note: mount check passed on turtlebot3_burger.default_2026-10-03_room_v1: the URDF's base_scan mount gives the sharpest map (+0 deg: 36.1, +90 deg: 4.0, +180 deg: 4.0, -90 deg: 4.0)
 ```
 
-The agent's wording changes from run to run. Its tool calls and the diff
-don't.
+The agent's wording changes from run to run. The diff doesn't. This run the
+agent used Quatern's verified fix and didn't call `propose_fix`.
 
-The fix is checked against the configuration. On the recording it is
-`unverified`: a simulator recording carries no message frames, topic names or
-QoS to check it against, and a rosbag2 of the robot (`--bag`) can. The
-recording's lidar mount check passed.
+The fix is checked against the configuration and verified on the recording.
+Every capture records its ROS context, including the QoS each publisher offers.
+Replaying the simulator recording shows `/scan` is published best effort, so the
+reliable subscription is the cause, and with the fix scan_guard's subscription
+matches it. The recording's lidar mount check passed. The replay can't tell
+whether scan_guard honours QoS overrides, so the caveat above still applies.
 
 ## What to look for in the run record
 
 Diagnose writes no receipt or stack. For a record, run it with `--json`.
 `findings[0].cause` is `qos_incompatible`, `findings[0].subject` is
 `scan_guard:/scan`, `findings[0].advice` holds the QoS-overrides caveat, and
-`findings[0].fix.verified` is `false`. `written` lists `scan_guard.yaml` after
-`--write`.
+`findings[0].fix.verified` is `true`, with `fix.checks` listing *checked
+against the configuration* and *verified on recording*. `notes` holds the
+recording replay and the mount check, and `written` lists `scan_guard.yaml`
+after `--write`.
 
 ## Docs
 

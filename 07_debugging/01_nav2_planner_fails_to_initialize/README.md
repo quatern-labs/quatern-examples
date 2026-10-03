@@ -76,8 +76,9 @@ Trimmed.
             use_astar: false
             allow_unknown: true
    - checked against the configuration: planner_plugin_unknown is gone and nothing new appears
-   - unverified: recording turtlebot3_burger.default_2026-10-03_room_v1 was made in the simulator and carries no message frames, topic names or QoS to check this against; a rosbag2 of the robot can (--bag)
+   - unverified: a recording cannot load a pluginlib plugin
 
+note: replayed turtlebot3_burger.default_2026-10-03_room_v1 through the configuration: frames, topics and QoS agree
 note: mount check passed on turtlebot3_burger.default_2026-10-03_room_v1: the URDF's base_scan mount gives the sharpest map (+0 deg: 36.1, +90 deg: 4.0, +180 deg: 4.0, -90 deg: 4.0)
 nothing written; --write applies the checked fixes
 ```
@@ -88,16 +89,20 @@ nothing written; --write applies the checked fixes
 [tool] diagnose_stack {"files": ["launch.log", "nav2_params.yaml"], "robot": "turtlebot3_burger"}
 [tool] propose_fix {"files": ["launch.log", "nav2_params.yaml"], "cause": "planner_plugin_unknown", "subject": "nav2_navfn_planner::NavfnPlanner", "file": "nav2_params.yaml", "...
 [result] propose_fix {"accepted":true,"cause":"planner_plugin_unknown","subject":"nav2_navfn_planner::NavfnPlanner","file":"nav2_params.ya...
-`diagnose_stack` found one root cause. The fix below passed the configuration check but has not been replayed on a recording.
-
-## Root cause: the planner plugin name is wrong (`planner_plugin_unknown`)
+`diagnose_stack` found one root cause. The stack fails because the global planner plugin name in `nav2_params.yaml` uses the wrong separator.
 [...]
 **Fix**
-Quatern's reference fix is correct. I submitted the same change to `propose_fix` as my own parameter set, and it was accepted with the identical diff:
+
+Quatern's fix is correct, so I didn't need to write a different one. I also re-submitted the same change through `propose_fix` as a check of my own. It was accepted and produced an identical diff:
 [...]
-**What was checked**
-- The checks say that `planner_plugin_unknown` is gone and nothing new appears. That is a check against the configuration only.
-- It is **unverified** against a recording. The only recording, `turtlebot3_burger.default_2026-10-03_room_v1`, comes from the simulator. It has no message frames, topic names or QoS to replay against. A rosbag2 of the real robot, passed with `--bag`, would let me replay it.
+**How far the fix is checked**
+
+- **Checked:** against the configuration only. The `planner_plugin_unknown` finding disappears and no new finding appears.
+- **Not verified:** the fix has not been replayed on a recording, because a recording can't load a pluginlib plugin. It is only confirmed when you relaunch and `planner_server` configures.
+
+**Other checks**
+
+I replayed the recording `turtlebot3_burger.default_2026-10-03_room_v1` against the configuration. Frames, topics and QoS agree, and the `base_scan` mount check passed.
 ```
 
 After `--write`, diagnose again:
@@ -105,6 +110,7 @@ After `--write`, diagnose again:
 ```text
 wrote: nav2_params.yaml
 no root cause found in launch.log, nav2_params.yaml, ~/.quatern/robots/turtlebot3_burger.urdf (turtlebot3_burger.default's URDF), recording turtlebot3_burger.default_2026-10-03_room_v1
+note: replayed turtlebot3_burger.default_2026-10-03_room_v1 through the configuration: frames, topics and QoS agree
 note: mount check passed on turtlebot3_burger.default_2026-10-03_room_v1: the URDF's base_scan mount gives the sharpest map (+0 deg: 36.1, +90 deg: 4.0, +180 deg: 4.0, -90 deg: 4.0)
 ```
 
@@ -112,9 +118,9 @@ The agent's wording changes from run to run. Its tool calls and the diff
 don't.
 
 The fix is checked against the configuration. On the recording it is
-`unverified`: a simulator recording carries no message frames, topic names or
-QoS to check it against, and a rosbag2 of the robot (`--bag`) can. The
-recording's lidar mount check passed.
+`unverified`: the recording's frames, topics and QoS agree with the
+configuration, but a recording can't load a pluginlib plugin, so only a
+relaunch confirms the fix. The recording's lidar mount check passed.
 
 ## What to look for in the run record
 
@@ -122,7 +128,8 @@ Diagnose writes no receipt or stack. For a record, run it with `--json`. Each
 entry in `findings` has a `cause` (`planner_plugin_unknown`), `evidence` (with
 `source` and `line`), and a `fix` with `author` (`reference` for Quatern's
 own), `verified` (`false` here) and `checks` (the two lines above). `notes`
-holds the mount check and `written` lists the files `--write` changed.
+holds the recording replay and the mount check, and `written` lists the files
+`--write` changed.
 
 ## Docs
 
