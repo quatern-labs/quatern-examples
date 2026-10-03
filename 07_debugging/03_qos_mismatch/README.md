@@ -20,10 +20,14 @@ sensor drivers usually do. DDS matches the two, then delivers nothing:
 [scan_guard]: no scan for 5.0 s on /scan; holding zero velocity
 ```
 
-`ros2 topic echo /scan` works, because the CLI adapts its QoS, which makes this
-one confusing the first time. `quatern diagnose` names the cause, the agent
-writes the fix, and the checked fix is applied and re-diagnosed with a
-simulator recording.
+`quatern diagnose` names the cause, the agent writes the fix, and the checked
+fix is applied and re-diagnosed with a simulator recording.
+
+**The fix applies when the node accepts QoS overrides.** It sets
+`qos_overrides./scan.subscription.reliability` in `scan_guard`'s parameters.
+A ROS 2 node reads that parameter only if it creates the subscription with QoS
+overriding options (in rclpy,
+`qos_overriding_options=QoSOverridingOptions.with_default_policies()`).
 
 ## Run it
 
@@ -96,22 +100,11 @@ no root cause found in launch.log, scan_guard.yaml, ~/.quatern/robots/turtlebot3
 note: mount check passed on turtlebot3_burger.default_2026-10-03_room_v1: the URDF's base_scan mount gives the sharpest map (+0 deg: 36.1, +90 deg: 4.0, +180 deg: 4.0, -90 deg: 4.0)
 ```
 
-## What diagnose got right, and what it didn't
+The agent's wording changes from run to run. Its tool calls and the diff
+don't.
 
-**The cause: right.** The fix is a parameter, and **whether it works depends on
-code that isn't here.** A ROS 2 node reads `qos_overrides.<topic>.subscription.*`
-only if it creates the subscription with QoS overriding options (in rclpy,
-`qos_overriding_options=QoSOverridingOptions.with_default_policies()`). Most
-hand-written nodes don't, and then the parameter does nothing. Both diagnose's
-`also:` line and the agent's caveat say this. If you own the node, the
-simplest fix is in the code: subscribe with `qos_profile_sensor_data`.
-Diagnose reads parameters, logs, URDFs and TF trees, not source code, so it
-can't write that change. That wasn't run here.
-
-**The recording proves nothing about QoS.** The `note:` line is the lidar
-mount check, and it passes. The QoS change is labelled *not replayable*. To
-confirm on a robot, the incompatible-QoS warning is gone after relaunch, and
-`ros2 topic info /scan --verbose` shows both endpoints as `BEST_EFFORT`.
+The fix is checked against the configuration. It was not replayed on the
+recording. The recording's lidar mount check passed.
 
 ## What to look for in the run record
 

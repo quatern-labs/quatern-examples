@@ -29,9 +29,8 @@ planner_server:
 ```
 
 Nav2 releases after Humble name plugins with `::`. Humble's pluginlib declares
-them with a slash, `nav2_navfn_planner/NavfnPlanner`, and the declared-types
-list in the error says so. A config copied across distributions fails like
-this.
+them with a slash, `nav2_navfn_planner/NavfnPlanner`, as the declared-types
+list in the error shows.
 
 `quatern diagnose` reads the log and the params file and names the cause. Then
 the agent explains it and writes its own fix, which `propose_fix` checks. The
@@ -114,17 +113,8 @@ note: mount check passed on turtlebot3_burger.default_2026-10-03_room_v1: the UR
 The agent's wording changes from run to run. Its tool calls and the diff
 don't.
 
-## How far the fix is verified
-
-- **Against the configuration: yes.** With the fix applied, the detectors no
-  longer find `planner_plugin_unknown` and find nothing new.
-- **On the recording: no.** A recording can't load a pluginlib plugin, so
-  diagnose says *not replayable* rather than claiming it. The recording's part
-  is the lidar mount check in the `note:` line. It passes, which rules out a
-  mount problem but says nothing about the planner.
-- **On a robot: not done here.** To confirm, relaunch Nav2 and check that
-  `planner_server` configures and the lifecycle manager reports the managed
-  nodes active.
+The fix is checked against the configuration. It was not replayed on the
+recording. The recording's lidar mount check passed.
 
 ## What to look for in the run record
 
