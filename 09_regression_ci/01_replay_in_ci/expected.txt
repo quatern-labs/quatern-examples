@@ -1,0 +1,7 @@
+made regress/room: 1 recording(s) of turtlebot3_burger.default, baseline recorded
+no regressions
+drift_at_end
+FAIL
+regression(s)
+<failure message="drift_at_end:
+baseline recorded for 1 recording(s) in regress/room

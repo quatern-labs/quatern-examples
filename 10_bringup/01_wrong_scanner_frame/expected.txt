@@ -1,0 +1,7 @@
+FAIL  scan's frame 'laser' is not a link of the URDF
+-      "frame": "laser",
++      "frame": "base_scan",
+checked: the frames check passes on the patched files
+1 failure(s) to fix before driving
+ok    scan is mounted on base_scan, a link of the URDF
+ready to drive: nothing fails

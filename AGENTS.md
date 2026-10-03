@@ -5,7 +5,7 @@ Instructions for anyone, person or coding agent, changing this repository.
 ## Layout
 
 ```
-NN_concept/                 a step of the guided tour (01_getting_started ... 06_perception), plus misc/
+NN_concept/                 a step of the guided tour (01_getting_started ... 11_hardware_profile), plus misc/
   README.md                 the concept, and a table of its examples
   NN_example/
     README.md               what it shows, the commands, expected output, the run record, a docs link

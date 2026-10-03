@@ -1,0 +1,8 @@
+from your description: motor_driver.type = l298n
+a hardware deploy is refused:
+motors.rated_v = 6.0 was described, not confirmed
+PWM cap:    0.891 (PWM 227): 6 V motors / (8.40 V full - 2 V driver drop) x 0.95 = 0.891
+# tt_rover wiring (uno + L298N)
+#define QB_PWM_MAX 227
+SILENCE_TIMEOUT_MS = 500
+the wheels-up self-test has not passed for this profile

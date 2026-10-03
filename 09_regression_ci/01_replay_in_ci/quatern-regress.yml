@@ -1,0 +1,43 @@
+# GitHub Actions: replay the robot's recordings against every pull request's
+# localizer, and fail the check on a regression.
+#
+# Copy to .github/workflows/quatern-regress.yml in the repository that holds
+# your module. The regression set (regress/room) is committed next to it;
+# make it once, on the machine with the robot's recordings, with
+#   quatern regress init regress/room --robot turtlebot3_burger \
+#       --world "reach (1.2, 2.0)" --localizer modules/localizer
+# Recordings are about 1 MB per 20 seconds: Git LFS
+# (`git lfs track "regress/**/*.gz"`) keeps the repository small. Nothing
+# here needs ROS or the robot: the set carries the recordings in Quatern's
+# portable form.
+name: quatern regress
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  regress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          lfs: true
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+      - name: Install Quatern
+        run: pip install "quatern==0.3.*"
+      - name: Replay the recordings
+        run: >
+          quatern regress run regress/room
+          --localizer modules/localizer
+          --junit regress.xml
+      - name: Keep the report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: quatern-regress
+          path: regress.xml
