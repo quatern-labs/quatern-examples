@@ -9,6 +9,7 @@ credentials
 .claude/*
 !.claude/settings.json
 !.claude/hooks/
+!.claude/skills/
 .claude/.last-green
 CLAUDE.local.md
 logs/
