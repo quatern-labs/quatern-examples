@@ -93,11 +93,14 @@ As in `d354898`:
 
 ## Which Quatern
 
-Same policy as `refresh-example-output`: while 0.3.0 isn't on PyPI, run
-against Quatern main (`pip install -e ../Quatern`), and record the short
-commit in the README ("Trimmed. From a run against Quatern main
-(`abc1234`).") and the commit message. Once 0.3.0 is published, run against
-the pinned release, or bump the pin everywhere if the example needs newer.
+Same policy as `refresh-example-output`: until the release is on PyPI, run
+against a local development install of quatern
+(`pip install -e <path-to-quatern-source>`), and record "development build"
+plus the version from `pip show quatern` in the README ("Trimmed. From a run
+against a development build of quatern (`0.3.0`).") and the commit message.
+Never write source-repo commit SHAs. Once the release is published, run
+against it and record only the published version, or bump the pin
+everywhere if the example needs newer.
 
 ## Files touched
 
@@ -117,8 +120,8 @@ the pinned release, or bump the pin everywhere if the example needs newer.
 - `pre-commit run --all-files` passes.
 - `grep -rn` for the old name finds nothing after a renumber.
 - The commit message lists each example with what it shows and the Quatern
-  build it ran against, e.g. "real output from runs against Quatern main
-  (f6cef6a)".
+  build it ran against, e.g. "real output from runs against a development
+  build of quatern (0.3.0)", or the published version after release.
 
 ## Gotchas from history
 

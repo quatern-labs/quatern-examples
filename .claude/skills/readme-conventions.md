@@ -35,9 +35,10 @@ Each example README has these sections, in this order:
 6. **Docs**: links to the matching page at https://quatern.co/docs/, with an
    anchor that exists (open the page and check).
 
-While Quatern 0.3.0 is not on PyPI, add the Quatern build line under
-"Trimmed." (see `refresh-example-output`):
-`Trimmed. From a run against Quatern main (\`9e7ad5d\`).`
+Until the release is on PyPI, add the build line under "Trimmed." (see
+`refresh-example-output`), with the version from `pip show quatern` and no
+commit SHA:
+`Trimmed. From a run against a development build of quatern (\`0.3.0\`).`
 
 Write plainly. No personal names, usernames, emails or local paths anywhere,
 including pasted output.

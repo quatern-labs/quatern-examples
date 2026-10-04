@@ -99,7 +99,7 @@ Builds on `add-example` (header, `expected.txt`, index rows) and
 
 - **Namespaces** (`ddcd0dd` → `c640b75`): the simulator capture is made under
   `/`; diagnose reads it in the robot's namespace (`/tb3_1`) taken from
-  `topics.txt`. Before Quatern main had that, 02's fix was rejected on
+  `topics.txt`. Before quatern had that, 02's fix was rejected on
   replay and 05 flagged a topic mismatch. Put the namespaced topics in
   `topics.txt`, and expect the note
   `was made under namespace /, but the robot runs under /tb3_1 (its declared topics)`.

@@ -23,7 +23,7 @@ rely on any other example having run. The runner gives each one a fresh, empty
 ## Run an example
 
 ```sh
-python3 -m venv .venv && .venv/bin/pip install quatern   # or: pip install -e ../Quatern
+python3 -m venv .venv && .venv/bin/pip install quatern   # or: pip install -e <path-to-quatern-source>
 export PATH="$PWD/.venv/bin:$PATH"
 
 bash 01_getting_started/01_simulator_tour/run.sh          # one example, in your ~/.quatern
@@ -34,9 +34,10 @@ python internal/run_examples.py --logs logs               # keep each example's 
 ```
 
 The examples are written for the Quatern version pinned in `pyproject.toml`.
-Develop against that version, from PyPI or from a local checkout with
-`pip install -e`. Until it is on PyPI, develop against Quatern main and
-record its commit (see `refresh-example-output`). READMEs always tell readers `pipx install quatern`.
+Develop against that version, from PyPI or from a local development install
+of quatern (`pip install -e <path-to-quatern-source>`). Until the release is
+on PyPI, use a local development install and record it as a development
+build (see `refresh-example-output`). READMEs always tell readers `pipx install quatern`.
 
 ## Procedures
 
@@ -86,6 +87,5 @@ pre-commit run --all-files     # or: ruff check . && ruff format --check .
 - Agent examples (`requires: agent`) need a key and aren't run by hooks.
 - In Claude Code, a Stop hook (`.claude/hooks/stop_examples.py`) runs the
   no-key examples in folders changed since the last green run.
-- A PreToolUse hook (`.claude/hooks/guard_harness.py`) blocks agent edits to
-  `.claude/settings.json`, `settings.local.json`, `hooks/`, `agents/` and
-  `commands/`. To change them, start Claude Code with `QUATERN_ALLOW_HARNESS_EDIT=1`.
+- The harness (`.claude/settings.json`, `settings.local.json`, `hooks/`,
+  `agents/` and `commands/`) is guarded; propose changes to the maintainer.
