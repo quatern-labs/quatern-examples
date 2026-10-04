@@ -4,8 +4,7 @@ Blocks Edit, Write and MultiEdit on .claude/settings.json,
 .claude/settings.local.json, .claude/hooks/, .claude/agents/ and
 .claude/commands/, and Bash commands that write to them
 (sed -i, perl -i, redirects, tee, mv, cp, rm, truncate, python -c open(..., 'w'),
-git checkout/restore). Set QUATERN_ALLOW_HARNESS_EDIT=1 in the environment
-Claude Code runs in to allow it.
+git checkout/restore). The harness is guarded; changes go to the maintainer.
 
 This catches honest mistakes, not a determined adversary.
 """
@@ -112,7 +111,7 @@ def main() -> int:
     print(
         f"Blocked: {reason}. The agent harness "
         "(.claude/settings.json, settings.local.json, hooks, agents, commands) is protected. "
-        "Ask the user to make this change, or to restart Claude Code with QUATERN_ALLOW_HARNESS_EDIT=1.",
+        "Propose the change to the maintainer.",
         file=sys.stderr,
     )
     return 2
