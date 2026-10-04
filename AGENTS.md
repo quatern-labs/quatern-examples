@@ -100,10 +100,22 @@ broken.
 - The pre-commit hooks block `sk-ant-` keys, private keys and `credentials`
   files. Install them with `pre-commit install`.
 - Don't commit `.quatern/` data directories, logs, or local agent tooling
-  state (`.claude/`); `.gitignore` covers them.
+  state (anything in `.claude/` except `settings.json` and `hooks/`);
+  `.gitignore` covers them.
 
 ## Lint
 
 ```sh
 pre-commit run --all-files     # or: ruff check . && ruff format --check .
 ```
+
+## Coding agents
+
+- READMEs show real output only, pasted from actual runs.
+- Commit as `Quatern <hello@quatern.co>`, with no `Co-Authored-By` lines.
+- No personal names, anywhere.
+- Keep the quatern version pin consistent across all folders (`pyproject.toml`
+  and any pin inside an example).
+- Agent examples (`requires: agent`) need a key and aren't run by hooks.
+- In Claude Code, a Stop hook (`.claude/hooks/stop_examples.py`) runs the
+  no-key examples in folders changed since the last green run.
