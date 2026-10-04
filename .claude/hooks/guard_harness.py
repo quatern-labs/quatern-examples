@@ -1,7 +1,8 @@
 """Claude Code PreToolUse hook: keep the agent from editing its own harness.
 
-Blocks Edit, Write and MultiEdit on .claude/settings.json, .claude/hooks/,
-.claude/agents/ and .claude/commands/, and Bash commands that write to them
+Blocks Edit, Write and MultiEdit on .claude/settings.json,
+.claude/settings.local.json, .claude/hooks/, .claude/agents/ and
+.claude/commands/, and Bash commands that write to them
 (sed -i, perl -i, redirects, tee, mv, cp, rm, truncate, python -c open(..., 'w'),
 git checkout/restore). Set QUATERN_ALLOW_HARNESS_EDIT=1 in the environment
 Claude Code runs in to allow it.
@@ -19,7 +20,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(os.environ.get("CLAUDE_PROJECT_DIR") or Path(__file__).resolve().parents[2]).resolve()
-PROTECTED = re.compile(r"(^|/)\.claude(/(settings\.json|hooks|agents|commands)(/|$)|/?$)")
+PROTECTED = re.compile(r"(^|/)\.claude(/(settings(\.local)?\.json|hooks|agents|commands)(/|$)|/?$)")
 EDIT_TOOLS = {"Edit", "Write", "MultiEdit"}
 WRITERS = {"mv", "rm", "truncate", "tee", "install", "ln", "chmod"}
 PY_WRITE = re.compile(r"open\([^)]*['\"][wax+]|write_text|write_bytes|unlink|rmtree|rename|replace\(")
@@ -109,7 +110,8 @@ def main() -> int:
     if reason is None:
         return 0
     print(
-        f"Blocked: {reason}. The agent harness (.claude/settings.json, hooks, agents, commands) is protected. "
+        f"Blocked: {reason}. The agent harness "
+        "(.claude/settings.json, settings.local.json, hooks, agents, commands) is protected. "
         "Ask the user to make this change, or to restart Claude Code with QUATERN_ALLOW_HARNESS_EDIT=1.",
         file=sys.stderr,
     )

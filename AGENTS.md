@@ -120,5 +120,5 @@ pre-commit run --all-files     # or: ruff check . && ruff format --check .
 - In Claude Code, a Stop hook (`.claude/hooks/stop_examples.py`) runs the
   no-key examples in folders changed since the last green run.
 - A PreToolUse hook (`.claude/hooks/guard_harness.py`) blocks agent edits to
-  `.claude/settings.json`, `hooks/`, `agents/` and `commands/`. To change
-  them, start Claude Code with `QUATERN_ALLOW_HARNESS_EDIT=1`.
+  `.claude/settings.json`, `settings.local.json`, `hooks/`, `agents/` and
+  `commands/`. To change them, start Claude Code with `QUATERN_ALLOW_HARNESS_EDIT=1`.
