@@ -6,7 +6,7 @@
 
 [![examples](https://github.com/quatern-labs/quatern-examples/actions/workflows/examples.yml/badge.svg)](https://github.com/quatern-labs/quatern-examples/actions/workflows/examples.yml)
 
-Examples of robot code written and verified with [Quatern](https://quatern.co).
+Examples of robot code written and verified with [Quatern Code](https://quatern.co).
 
 ## Usage
 
@@ -50,7 +50,7 @@ directory first: `export QUATERN_DATA_DIR=$(mktemp -d)`.
 
 **Needs** is one of:
 
-- **Nothing**: runs entirely on your machine, in Quatern's built-in simulator.
+- **Nothing**: runs entirely on your machine, in Quatern Code's built-in simulator.
   No key, no account, no ROS.
 - **Sign-in (free) or an Anthropic key**: uses the agent. Run `quatern login`
   for free monthly usage on Quatern's hosted API, or set `ANTHROPIC_API_KEY`
@@ -61,7 +61,7 @@ touching a robot. Moving a real robot is covered by
 `quatern hardware --robot <name>` and the
 [setup docs](https://quatern.co/docs/setup/#from-the-simulator-to-the-real-robot).
 
-These examples are continuously tested against the latest Quatern release on
+These examples are continuously tested against the latest Quatern Code release on
 Python 3.11.
 
 ## Contributing
