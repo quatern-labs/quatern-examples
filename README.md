@@ -66,8 +66,35 @@ Python 3.11.
 
 ## Contributing
 
-See [AGENTS.md](AGENTS.md) for how to run, add and test an example. If an
-example is broken, [open an issue](https://github.com/quatern-labs/quatern-examples/issues/new?template=example-is-broken.yml).
+Each concept folder has a README with a table of its examples, and each
+example is a folder:
+
+```
+NN_concept/
+  README.md               the concept, and a table of its examples
+  NN_example/
+    README.md             what it shows, the commands, expected output, a docs link
+    run.sh                exactly the commands the README shows, run headlessly
+    expected.txt          lines that must appear in the output (checked by CI)
+    *.py, *.urdf          small helpers or inputs the example needs; stdlib only
+internal/run_examples.py  runs examples and checks their output (CI uses it)
+```
+
+Every example is self-contained: it installs the robot it needs and doesn't
+rely on any other example having run. To run the checks yourself:
+
+```sh
+python3 -m venv .venv && .venv/bin/pip install quatern
+export PATH="$PWD/.venv/bin:$PATH"
+
+python internal/run_examples.py                  # every no-key example, each in a scratch data dir
+python internal/run_examples.py 04_safety        # only paths containing "04_safety"
+python internal/run_examples.py --agent          # agent examples too (needs a key in the environment)
+python internal/run_examples.py --logs logs      # keep each example's full output
+```
+
+Lint with `pre-commit run --all-files`. Coding agents: see
+[AGENTS.md](AGENTS.md). If an example is broken, [open an issue](https://github.com/quatern-labs/quatern-examples/issues/new?template=example-is-broken.yml).
 
 ## License
 
