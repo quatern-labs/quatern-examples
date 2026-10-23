@@ -61,8 +61,11 @@ touching a robot. Moving a real robot is covered by
 `quatern hardware --robot <name>` and the
 [setup docs](https://quatern.co/docs/setup/#from-the-simulator-to-the-real-robot).
 
-These examples are continuously tested against the latest Quatern Code release on
-Python 3.11.
+CI runs every example on Python 3.11 on each push, pull request and weekly,
+against the Quatern Code release pinned in `pyproject.toml`. The run fails if
+that release is not on PyPI. Agent examples run in CI only when the
+`QUATERN_API_KEY` secret is set (pull requests from forks don't get it), so
+they are otherwise not tested there.
 
 ## Contributing
 

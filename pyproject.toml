@@ -6,7 +6,7 @@ readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
 # The Quatern release these examples, and their expected output, were written
-# against. CI tests them against the latest release on PyPI.
+# against. CI installs exactly this version and fails if it is not on PyPI.
 dependencies = ["quatern==0.3.0"]
 
 [dependency-groups]
