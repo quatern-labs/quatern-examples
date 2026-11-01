@@ -21,8 +21,4 @@ Instructions for anyone, person or coding agent, changing this repository.
 - Commit as `Quatern <hello@quatern.co>`, with no `Co-Authored-By` lines.
 - No personal names, anywhere.
 - Agent examples (`requires: agent`) need a key and aren't run by hooks.
-- In Claude Code, a Stop hook (`.claude/hooks/stop_examples.py`) runs the
-  no-key examples in folders changed since the last green run.
-- The harness (`.claude/settings.json`, `settings.local.json`, `hooks/`,
-  `agents/` and `commands/`) is guarded; propose changes to the maintainer.
 - READMEs always tell readers `pipx install quatern`.
