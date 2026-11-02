@@ -6,10 +6,6 @@ __pycache__/
 .quatern/
 credentials
 .env
-.claude/*
-!.claude/settings.json
-!.claude/hooks/
-!.claude/skills/
-.claude/.last-green
+.claude/
 CLAUDE.local.md
 logs/
